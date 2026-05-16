@@ -9,7 +9,7 @@ description: Manage Android automation projects that use LDPlayer, AutoJs6, and 
 
 Use this skill for the user's Windows + LDPlayer + AutoJs6 automation workflow.
 
-Current known defaults for `C:\Users\user\Desktop\ms`:
+Current known defaults for this project. Treat `<repo>` as the cloned repository root on the current PC.
 
 - LDPlayer: `C:\LDPlayer\LDPlayer9`
 - Console: `C:\LDPlayer\LDPlayer9\ldconsole.exe`
@@ -20,7 +20,7 @@ Current known defaults for `C:\Users\user\Desktop\ms`:
 - Resolution: `1280x720`
 - DPI: `240`
 - Global FPS cap: `60`
-- Windows shared folder: `C:\Users\user\Documents\XuanZhi9\Pictures`
+- Windows shared folder: `%USERPROFILE%\Documents\XuanZhi9\Pictures`
 - Android shared folder: `/sdcard/Pictures`
 - AutoJs6 package: `org.autojs.autojs6`
 - MapleStory Worlds package: `com.nexon.mod`
@@ -34,12 +34,14 @@ Do not build or assist with multiplayer farming, ranking, economy, trading, anti
 ## Standard Workflow
 
 1. Read the project docs before changing behavior:
-   - `C:\Users\user\Desktop\ms\WORKFLOW.md`
-   - `C:\Users\user\Desktop\ms\docs\ENVIRONMENT.md`
-   - `C:\Users\user\Desktop\ms\docs\TOOLS_AND_INSTALLATION.md`
-   - `C:\Users\user\Desktop\ms\docs\USAGE_AND_SHARING.md`
-   - `C:\Users\user\Desktop\ms\docs\WORK_AND_DEVELOPMENT_METHOD.md`
-   - `C:\Users\user\Desktop\ms\logs\LEARNINGS.md`
+   - `<repo>\WORKFLOW.md`
+   - `<repo>\MIGRATION.md`
+   - `<repo>\docs\ENVIRONMENT.md`
+   - `<repo>\docs\TOOLS_AND_INSTALLATION.md`
+   - `<repo>\docs\USAGE_AND_SHARING.md`
+   - `<repo>\docs\WORK_AND_DEVELOPMENT_METHOD.md`
+   - `<repo>\docs\RECORDING_RULES.md`
+   - `<repo>\logs\LEARNINGS.md`
 2. Prefer LDPlayer's bundled ADB over other `adb.exe` installations.
 3. Validate ADB before relying on screenshots, input, file sync, or app launch.
 4. Use short visual checks:
@@ -55,13 +57,13 @@ Do not build or assist with multiplayer farming, ranking, economy, trading, anti
 Validate the current LDPlayer ADB endpoint:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Or use the bundled skill copy:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\.codex\skills\ldplayer-autojs6\scripts\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\ldplayer-autojs6\scripts\setup-ldplayer-adb.ps1" -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Manual checks:
@@ -117,13 +119,13 @@ Prefer ADB screenshots when ADB is healthy:
 
 ```powershell
 & 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell screencap -p /sdcard/Pictures/shot.png
-& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 pull /sdcard/Pictures/shot.png C:\Users\user\Desktop\ms\downloads\shot.png
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 pull /sdcard/Pictures/shot.png .\downloads\shot.png
 ```
 
 Use non-obstructing Windows capture when the user is working in another window:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\capture-ldplayer.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
 ```
 
 If `PrintWindow` returns black/blank for graphics surfaces, use ADB `screencap` or briefly foreground LDPlayer and capture the screen region.
@@ -135,21 +137,21 @@ Use `send-ldplayer-key.ps1` only for short testing/accessibility/private workflo
 Dry-run a repeated `A` key sequence:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
 ```
 
 Send a short bounded sequence:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250
 ```
 
 The tool rejects unbounded runs. `DurationSeconds` is capped by `MaxDurationSeconds` and defaults to a maximum of `30` seconds.
 
 ## AutoJs6 Script Flow
 
-1. Edit scripts under `C:\Users\user\Desktop\ms\scripts`.
-2. Copy them to `C:\Users\user\Documents\XuanZhi9\Pictures`.
+1. Edit scripts under `<repo>\scripts`.
+2. Copy them to `%USERPROFILE%\Documents\XuanZhi9\Pictures`.
 3. Import from `/sdcard/Pictures` in AutoJs6.
 4. Run small tests before long loops.
 5. Always include a stop condition for repeated actions.
@@ -164,7 +166,7 @@ If Google Play requires login, pause and let the user log in manually. Do not us
 
 For reusable PowerShell helpers:
 
-1. Add or update a focused test under `C:\Users\user\Desktop\ms\tests`.
+1. Add or update a focused test under `<repo>\tests`.
 2. Run the test and observe the failure or missing behavior.
 3. Implement the smallest practical change under `tools` or `scripts`.
 4. Re-run the test.

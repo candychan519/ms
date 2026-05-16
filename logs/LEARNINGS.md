@@ -291,3 +291,20 @@ Added `MIGRATION.md` as the single entrypoint for restoring the workspace on ano
 
 Next action:
 Use `MIGRATION.md` first when setting up a new PC, then run the validation commands before continuing automation work.
+
+## 2026-05-17 - Migration Audit Hardening
+
+Context:
+The user asked to use multi-agent review to find anything missed before treating the migration as ready.
+
+Finding:
+The audit found migration weaknesses: hardcoded `C:\Users\user` paths in skill tests and skill docs, missing Codex/skill validator preconditions, no skill install helper, no full test runner, no focused capture helper test, incomplete secret ignore patterns, missing `RECORDING_RULES.md` from the skill's standard doc list, and some broken encoded text in rules docs.
+
+Decision:
+Hardened migration by adding `tools/install-codex-skill.ps1`, `tests/test-install-codex-skill.ps1`, `tests/test-capture-ldplayer.ps1`, and `tests/run-all.ps1`. Generalized skill/test paths to `<repo>` and `$env:USERPROFILE` where possible, expanded `.gitignore` secret patterns, rewrote `docs/RECORDING_RULES.md`, cleaned `docs/WORK_AND_DEVELOPMENT_METHOD.md`, and updated `MIGRATION.md` with Codex, PyYAML, AutoJs6 download, shared-folder, per-instance FPS, and active-skill validation steps.
+
+Next action:
+Use `tests/run-all.ps1` as the default pre-push verification command.
+
+Verification:
+`tests/run-all.ps1` passed after the hardening changes. The LDPlayer-only live capture assertion was skipped because LDPlayer was not running, but the static capture checks passed. The repo skill passed `quick_validate.py`, and the active Codex skill was reinstalled from `codex-skills/ldplayer-autojs6`.

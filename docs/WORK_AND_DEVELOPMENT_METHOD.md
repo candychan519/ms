@@ -1,60 +1,62 @@
 # Work And Development Method
 
-이 문서는 작업 방법과 개발 방법을 기록합니다.
+This document records the working method and development method for the LDPlayer + AutoJs6 automation project.
 
 ## Project Layout
 
 ```text
 WORKFLOW.md
+MIGRATION.md
 docs/
 logs/
 scripts/
 screenshots/
 downloads/
+tools/
+tests/
+codex-skills/
 ```
 
 Directory roles:
 
 - `WORKFLOW.md`: project entrypoint and documentation map
+- `MIGRATION.md`: restore the workspace on another Windows PC
 - `docs/`: stable operating documents
 - `logs/`: append-only learning and decision notes
 - `scripts/`: source AutoJs6 scripts edited on Windows
-- `screenshots/`: screenshots used for coordinate, image, or OCR analysis
-- `downloads/`: downloaded installers and external artifacts
+- `screenshots/`: ignored screenshot workspace
+- `downloads/`: ignored installers and external artifacts
+- `tools/`: reusable PowerShell helpers
+- `tests/`: TDD and migration validation
+- `codex-skills/`: versioned Codex skill source
 
 ## Development Loop
 
 1. Define the target screen and action.
-2. Record whether the automation is offline/personal/testing/accessibility or online/multiplayer.
+2. Record whether the automation is offline, personal, testing, accessibility, or online/multiplayer.
 3. Capture or inspect the screen if coordinates or images are needed.
-4. Write the script in `scripts/`.
-5. Copy the script to the LDPlayer shared folder.
-6. Import or update it in AutoJs6.
-7. Run a small test first.
+4. Write or update the smallest useful script or helper.
+5. Add or update a focused test first when the change is reusable.
+6. Run the focused test.
+7. Run one live LDPlayer validation when the change touches ADB, screenshots, shared folders, app launch, resolution, FPS, or input.
 8. Record results, issues, and useful findings in `logs/LEARNINGS.md`.
 9. Update stable docs if the finding changes the workflow.
 
 ## TDD Loop For Tools
 
-Use this loop for PowerShell helpers, ADB setup scripts, and reusable automation tooling:
+Use this loop for PowerShell helpers, ADB setup scripts, capture helpers, input helpers, and reusable automation tooling:
 
 1. Add or update a focused test under `tests/`.
 2. Run the test and confirm the current failure or missing behavior.
-3. Implement the smallest change under `tools/` or `scripts/`.
+3. Implement the smallest change under `tools/`, `scripts/`, or `codex-skills/`.
 4. Re-run the focused test.
-5. Run one live validation against LDPlayer when the change affects ADB, screenshots, shared folders, or app control.
+5. Run `tests/run-all.ps1` before committing when practical.
 6. Record stable commands and learned failure modes in `docs/` and `logs/LEARNINGS.md`.
 
-Current ADB test command:
+Run all tests:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tests\test-ldplayer-adb-setup.ps1
-```
-
-Current live ADB validation:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-all.ps1
 ```
 
 ## Multi-Agent Work Method
@@ -64,53 +66,33 @@ Use multi-agent work when the user explicitly asks for it or when work can be sp
 Default split:
 
 - Explorer agent: read-only inspection of LDPlayer, logs, ports, docs, and current system state.
-- Worker agent: bounded implementation in a disjoint file set, usually `tools/` and `tests/`.
-- Main agent: integrate results, perform live setup, run verification, and update project docs/logs.
+- Worker agent: bounded implementation in disjoint files, usually `tools/` and `tests/`.
+- Main agent: integrate results, perform live setup, run verification, update docs/logs, and push changes when requested.
 
 Workers must not edit docs/logs unless that is their assigned ownership. Main agent owns final integration and documentation.
 
 ## Screen Check Cadence
 
-When inspecting LDPlayer visually, Codex should capture the LDPlayer window only, not the whole desktop.
+When inspecting LDPlayer visually, prefer LDPlayer-only captures over full desktop screenshots.
 
-Preferred method:
+Preferred methods:
 
-- Use `tools/capture-ldplayer.ps1`.
-- This uses Windows `PrintWindow`, so it does not need to bring LDPlayer to the foreground.
-- This avoids covering the user's active work window.
+- Use ADB `screencap` when ADB is healthy.
+- Use `tools/capture-ldplayer.ps1` when the user is working in another window and non-obstructing capture is needed.
 
 Command:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\capture-ldplayer.ps1
-```
-
-Fallback method:
-
-- Use the screenshot skill's `-WindowHandle` capture.
-- This can include overlapping windows, so only use it if `PrintWindow` is insufficient.
-
-Fallback command pattern:
-
-```powershell
-$p = Get-Process dnplayer | Select-Object -First 1
-powershell -ExecutionPolicy Bypass -File C:\Users\user\.codex\skills\screenshot\scripts\take_screenshot.ps1 -Mode temp -WindowHandle $p.MainWindowHandle
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
 ```
 
 The wait should match the action:
 
 - Simple click or navigation: wait `0.5-1.5` seconds.
 - Normal UI transitions: wait `1-3` seconds.
-- App launch or first screen load: wait `3-7` seconds, then re-check instead of waiting too long at once.
-- Store install, update, or network-heavy loading: check every `5-10` seconds unless a longer wait is clearly needed.
+- App launch or first screen load: wait `3-7` seconds, then re-check.
+- Store install, update, or network-heavy loading: check every `5-10` seconds.
 - Unknown stuck state: take one screenshot, then decide whether to wait longer or change approach.
-
-Default going forward:
-
-- Prefer frequent short checks over one long wait.
-- Use `0.5-1.5` second checks for normal UI work.
-- Use repeated `5-10` second checks for installs, downloads, updates, or network loading.
-- Only use a long wait when there is a clear reason, and mention that reason.
 
 ## New Script Template
 
@@ -132,11 +114,11 @@ Known issues:
 
 ## Code Style
 
-- Keep scripts small until the behavior is proven.
-- Put reusable helpers at the top of the script.
+- Keep scripts small until behavior is proven.
+- Put reusable helpers at the top of scripts.
 - Prefer named functions over long unstructured loops.
 - Add a stop condition before any long loop.
-- Use `toast()` or logs for visible status during early tests.
+- Use `toast()` or logs for visible status during early AutoJs6 tests.
 - Keep fixed coordinates documented with the screen resolution.
 
 ## Safety Boundary

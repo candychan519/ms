@@ -7,14 +7,14 @@
 LDPlayer maps the Windows folder to Android storage:
 
 ```text
-Windows: C:\Users\user\Documents\XuanZhi9\Pictures
+Windows: %USERPROFILE%\Documents\XuanZhi9\Pictures
 Android: /sdcard/Pictures
 ```
 
 Example:
 
 ```text
-C:\Users\user\Documents\XuanZhi9\Pictures\autojs6-test.js
+%USERPROFILE%\Documents\XuanZhi9\Pictures\autojs6-test.js
 ```
 
 is visible inside LDPlayer as:
@@ -28,13 +28,13 @@ is visible inside LDPlayer as:
 1. Edit the script in the project:
 
    ```text
-   C:\Users\user\Desktop\ms\scripts\<name>.js
+   <repo>\scripts\<name>.js
    ```
 
 2. Copy it to the LDPlayer shared folder:
 
    ```powershell
-   Copy-Item -Path 'C:\Users\user\Desktop\ms\scripts\<name>.js' -Destination 'C:\Users\user\Documents\XuanZhi9\Pictures\<name>.js' -Force
+   Copy-Item -Path '.\scripts\<name>.js' -Destination (Join-Path $env:USERPROFILE 'Documents\XuanZhi9\Pictures\<name>.js') -Force
    ```
 
 3. Open AutoJs6 in LDPlayer.
@@ -53,8 +53,8 @@ is visible inside LDPlayer as:
 
 ## Current Test Script
 
-- Project path: `C:\Users\user\Desktop\ms\scripts\autojs6-test.js`
-- Windows shared path: `C:\Users\user\Documents\XuanZhi9\Pictures\autojs6-test.js`
+- Project path: `<repo>\scripts\autojs6-test.js`
+- Windows shared path: `%USERPROFILE%\Documents\XuanZhi9\Pictures\autojs6-test.js`
 - Android path: `/sdcard/Pictures/autojs6-test.js`
 - Imported AutoJs6 item name: `autojs6-test`
 
@@ -101,13 +101,13 @@ Use `tools/send-ldplayer-key.ps1` for short input tests only. Do not use it for 
 Dry-run an `A` key repeat:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
 ```
 
 Send a short bounded `A` key repeat:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250
 ```
 
 The helper uses Android `input keyevent` through ADB. `A` maps to Android keycode `29` (`KEYCODE_A`).

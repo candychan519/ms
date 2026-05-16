@@ -1,11 +1,11 @@
 # Project Baseline
 
-This reference summarizes the reusable LDPlayer + AutoJs6 automation state for `C:\Users\user\Desktop\ms`.
+This reference summarizes the reusable LDPlayer + AutoJs6 automation state. Treat `<repo>` as the cloned repository root.
 
 ## Current Environment
 
 - Host: Windows, PowerShell
-- Project path: `C:\Users\user\Desktop\ms`
+- Project path: `<repo>`
 - LDPlayer path: `C:\LDPlayer\LDPlayer9`
 - LDPlayer version observed: `9.5.11.1`
 - Instance: index `0`, name `LDPlayer`
@@ -22,7 +22,7 @@ This reference summarizes the reusable LDPlayer + AutoJs6 automation state for `
 ## Shared Folder
 
 ```text
-Windows: C:\Users\user\Documents\XuanZhi9\Pictures
+Windows: %USERPROFILE%\Documents\XuanZhi9\Pictures
 Android: /sdcard/Pictures
 ```
 
@@ -78,13 +78,13 @@ Capture through ADB:
 
 ```powershell
 & 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell screencap -p /sdcard/Pictures/shot.png
-& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 pull /sdcard/Pictures/shot.png C:\Users\user\Desktop\ms\downloads\shot.png
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 pull /sdcard/Pictures/shot.png .\downloads\shot.png
 ```
 
 Dry-run a bounded `A` key test:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
 ```
 
 ## Known Caveats

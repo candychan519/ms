@@ -1,6 +1,7 @@
 # Environment
 
-이 문서는 LDPlayer + AutoJs6 자동화 환경 정보를 기록합니다.
+This document records the current source-PC snapshot for the LDPlayer + AutoJs6 workflow.
+For a different PC, use `MIGRATION.md` first and then update this file with the new local paths and observed state.
 
 ## Host
 

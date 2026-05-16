@@ -74,30 +74,42 @@ This document summarizes the LDPlayer + AutoJs6 automation setup work completed 
    - Added `tests/test-ldplayer-autojs6-skill.ps1`.
    - Confirmed `quick_validate.py` reports `Skill is valid!`.
 
+11. Added migration hardening:
+   - Added `MIGRATION.md`.
+   - Added `tools/install-codex-skill.ps1`.
+   - Added `tests/run-all.ps1`, `tests/test-install-codex-skill.ps1`, and `tests/test-capture-ldplayer.ps1`.
+   - Generalized skill and tests to avoid hardcoded `C:\Users\user` paths where possible.
+
 ## Core Commands
 
 Validate ADB:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Run ADB tests:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tests\test-ldplayer-adb-setup.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-adb-setup.ps1
 ```
 
 Run skill tests:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tests\test-ldplayer-autojs6-skill.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-autojs6-skill.ps1
+```
+
+Run all tests:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-all.ps1
 ```
 
 Run official skill validation:
 
 ```powershell
-python C:\Users\user\.codex\skills\.system\skill-creator\scripts\quick_validate.py C:\Users\user\.codex\skills\ldplayer-autojs6
+python $env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py $env:USERPROFILE\.codex\skills\ldplayer-autojs6
 ```
 
 Check resolution:

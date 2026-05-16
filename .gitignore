@@ -20,5 +20,11 @@ Thumbs.db
 
 # Secrets
 .env
+.env.*
 *.token
 *.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer

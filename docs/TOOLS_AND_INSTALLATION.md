@@ -13,7 +13,7 @@
 ## Installed AutoJs6
 
 - Version: `v6.7.0`
-- APK file: `C:\Users\user\Desktop\ms\downloads\autojs6-v6.7.0-x86_64-3d410022.apk`
+- APK file: `<repo>\downloads\autojs6-v6.7.0-x86_64-3d410022.apk`
 - Source: `https://github.com/SuperMonster003/AutoJs6/releases/tag/v6.7.0`
 - APK asset: `autojs6-v6.7.0-x86_64-3d410022.apk`
 
@@ -23,7 +23,7 @@ The first `Invoke-WebRequest` download timed out after 5 minutes, leaving a part
 
 ```powershell
 $url = 'https://github.com/SuperMonster003/AutoJs6/releases/download/v6.7.0/autojs6-v6.7.0-x86_64-3d410022.apk'
-$out = 'C:\Users\user\Desktop\ms\downloads\autojs6-v6.7.0-x86_64-3d410022.apk'
+$out = '.\downloads\autojs6-v6.7.0-x86_64-3d410022.apk'
 curl.exe -L -C - -o $out $url
 ```
 
@@ -32,7 +32,7 @@ curl.exe -L -C - -o $out $url
 AutoJs6 was installed into LDPlayer instance `0`.
 
 ```powershell
-& 'C:\LDPlayer\LDPlayer9\ldconsole.exe' installapp --index 0 --filename 'C:\Users\user\Desktop\ms\downloads\autojs6-v6.7.0-x86_64-3d410022.apk'
+& 'C:\LDPlayer\LDPlayer9\ldconsole.exe' installapp --index 0 --filename (Resolve-Path .\downloads\autojs6-v6.7.0-x86_64-3d410022.apk)
 ```
 
 ## Android App Installation Policy
@@ -82,7 +82,7 @@ Current setup:
 Setup and validation command:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Manual checks:
@@ -98,7 +98,7 @@ Screen capture through ADB:
 
 ```powershell
 & 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell screencap -p /sdcard/Pictures/adb-test.png
-& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 pull /sdcard/Pictures/adb-test.png C:\Users\user\Desktop\ms\downloads\adb-test.png
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 pull /sdcard/Pictures/adb-test.png .\downloads\adb-test.png
 ```
 
 ## LDPlayer FPS
@@ -128,7 +128,7 @@ If the running instance does not visibly apply the saved FPS immediately, restar
 Codex skill validation uses the system `skill-creator` validator:
 
 ```powershell
-python C:\Users\user\.codex\skills\.system\skill-creator\scripts\quick_validate.py C:\Users\user\.codex\skills\ldplayer-autojs6
+python "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" "$env:USERPROFILE\.codex\skills\ldplayer-autojs6"
 ```
 
 This validator requires `PyYAML`.
@@ -148,5 +148,5 @@ python -m pip install PyYAML
 Project test for the skill:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tests\test-ldplayer-autojs6-skill.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-autojs6-skill.ps1
 ```

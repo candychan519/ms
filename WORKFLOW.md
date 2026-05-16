@@ -17,10 +17,15 @@ Use this file as the project entrypoint. Stable details are split by topic:
 - Session summary: `docs/SESSION_SUMMARY_2026-05-16.md`
 - ADB setup helper: `tools/setup-ldplayer-adb.ps1`
 - Bounded key input helper: `tools/send-ldplayer-key.ps1`
+- Codex skill install helper: `tools/install-codex-skill.ps1`
+- Full test runner: `tests/run-all.ps1`
 - ADB setup tests: `tests/test-ldplayer-adb-setup.ps1`
+- LDPlayer capture tests: `tests/test-capture-ldplayer.ps1`
+- Codex skill install tests: `tests/test-install-codex-skill.ps1`
 - Bounded key input tests: `tests/test-send-ldplayer-key.ps1`
 - Skill validation tests: `tests/test-ldplayer-autojs6-skill.ps1`
-- Reusable Codex skill: `C:\Users\user\.codex\skills\ldplayer-autojs6`
+- Reusable Codex skill: `%USERPROFILE%\.codex\skills\ldplayer-autojs6`
+- Versioned Codex skill source: `codex-skills/ldplayer-autojs6`
 
 Documentation rule:
 
@@ -57,14 +62,14 @@ Windows
 LDPlayer maps the Windows shared folder to an Android folder:
 
 ```text
-Windows: C:\Users\user\Documents\XuanZhi9\Pictures
+Windows: %USERPROFILE%\Documents\XuanZhi9\Pictures
 Android: /sdcard/Pictures
 ```
 
 Example:
 
 ```text
-C:\Users\user\Documents\XuanZhi9\Pictures\macro.js
+%USERPROFILE%\Documents\XuanZhi9\Pictures\macro.js
 ```
 
 is visible inside LDPlayer as:
@@ -78,13 +83,13 @@ is visible inside LDPlayer as:
 1. Write or edit a script on Windows, for example:
 
    ```text
-   C:\Users\user\Desktop\ms\macro.js
+   <repo>\scripts\macro.js
    ```
 
 2. Copy the script to the LDPlayer shared folder:
 
    ```text
-   C:\Users\user\Documents\XuanZhi9\Pictures\macro.js
+   %USERPROFILE%\Documents\XuanZhi9\Pictures\macro.js
    ```
 
 3. Open LDPlayer.
@@ -104,8 +109,8 @@ is visible inside LDPlayer as:
 Use this small script to confirm that AutoJs6 can run a file from the shared folder:
 
 ```text
-Project: C:\Users\user\Desktop\ms\scripts\autojs6-test.js
-Windows shared folder: C:\Users\user\Documents\XuanZhi9\Pictures\autojs6-test.js
+Project: <repo>\scripts\autojs6-test.js
+Windows shared folder: %USERPROFILE%\Documents\XuanZhi9\Pictures\autojs6-test.js
 Android path: /sdcard/Pictures/autojs6-test.js
 ```
 
@@ -139,13 +144,13 @@ C:\LDPlayer\LDPlayer9\adb.exe
 Validate setup:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Run tests for the setup helper:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tests\test-ldplayer-adb-setup.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-adb-setup.ps1
 ```
 
 Use explicit serials when running ADB commands:
