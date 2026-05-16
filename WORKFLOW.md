@@ -1,0 +1,217 @@
+# Workflow
+
+This project stores notes and scripts for Android AutoJs6 automation running in LDPlayer.
+
+## Documentation Map
+
+Use this file as the project entrypoint. Stable details are split by topic:
+
+- Environment info: `docs/ENVIRONMENT.md`
+- Tools and installation: `docs/TOOLS_AND_INSTALLATION.md`
+- Usage and sharing: `docs/USAGE_AND_SHARING.md`
+- Work and development method: `docs/WORK_AND_DEVELOPMENT_METHOD.md`
+- Recording rules: `docs/RECORDING_RULES.md`
+- Learning log: `logs/LEARNINGS.md`
+- Script source notes: `scripts/README.md`
+- Session summary: `docs/SESSION_SUMMARY_2026-05-16.md`
+- ADB setup helper: `tools/setup-ldplayer-adb.ps1`
+- Bounded key input helper: `tools/send-ldplayer-key.ps1`
+- ADB setup tests: `tests/test-ldplayer-adb-setup.ps1`
+- Bounded key input tests: `tests/test-send-ldplayer-key.ps1`
+- Skill validation tests: `tests/test-ldplayer-autojs6-skill.ps1`
+- Reusable Codex skill: `C:\Users\user\.codex\skills\ldplayer-autojs6`
+
+Documentation rule:
+
+- If the environment, tools, install process, usage flow, sharing path, work method, or development method changes, update the matching document.
+- If a new finding, mistake, workaround, or verification result appears during work, append it to `logs/LEARNINGS.md`.
+- Do not record secrets, passwords, tokens, or account recovery data.
+
+## Environment
+
+- Host OS: Windows
+- Emulator: LDPlayer
+- Automation runtime: AutoJs6 for Android, installed inside LDPlayer
+- Installed AutoJs6 version: 6.7.0
+- LDPlayer resolution: 1280x720
+- LDPlayer DPI: 240
+- LDPlayer ADB endpoint: `127.0.0.1:5555`
+- LDPlayer ADB serial: `emulator-5554`
+- AutoJs6 overlay permission: enabled
+- AutoJs6 accessibility service: enabled
+
+AutoJs6 scripts are not executed directly by Windows. They run inside the Android environment provided by LDPlayer.
+
+```text
+Windows
++-- LDPlayer
+    +-- Android
+        +-- target app or game
+        +-- AutoJs6
+            +-- .js script
+```
+
+## Shared Folder
+
+LDPlayer maps the Windows shared folder to an Android folder:
+
+```text
+Windows: C:\Users\user\Documents\XuanZhi9\Pictures
+Android: /sdcard/Pictures
+```
+
+Example:
+
+```text
+C:\Users\user\Documents\XuanZhi9\Pictures\macro.js
+```
+
+is visible inside LDPlayer as:
+
+```text
+/sdcard/Pictures/macro.js
+```
+
+## Basic Script Workflow
+
+1. Write or edit a script on Windows, for example:
+
+   ```text
+   C:\Users\user\Desktop\ms\macro.js
+   ```
+
+2. Copy the script to the LDPlayer shared folder:
+
+   ```text
+   C:\Users\user\Documents\XuanZhi9\Pictures\macro.js
+   ```
+
+3. Open LDPlayer.
+
+4. Open AutoJs6 inside LDPlayer.
+
+5. Open the script from:
+
+   ```text
+   /sdcard/Pictures/macro.js
+   ```
+
+6. Run the script from AutoJs6.
+
+## Test Script
+
+Use this small script to confirm that AutoJs6 can run a file from the shared folder:
+
+```text
+Project: C:\Users\user\Desktop\ms\scripts\autojs6-test.js
+Windows shared folder: C:\Users\user\Documents\XuanZhi9\Pictures\autojs6-test.js
+Android path: /sdcard/Pictures/autojs6-test.js
+```
+
+```js
+auto.waitFor();
+
+toast("AutoJs6 shared folder test OK");
+sleep(1000);
+
+click(500, 500);
+```
+
+Expected result:
+
+- A toast message appears inside LDPlayer.
+- The emulator receives one tap at screen coordinate `500, 500`.
+
+Current status:
+
+- `autojs6-test` was imported into AutoJs6.
+- The test script ran successfully and displayed `AutoJs6 shared folder test OK`.
+
+## ADB Workflow
+
+Use LDPlayer's bundled ADB:
+
+```powershell
+C:\LDPlayer\LDPlayer9\adb.exe
+```
+
+Validate setup:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+```
+
+Run tests for the setup helper:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\user\Desktop\ms\tests\test-ldplayer-adb-setup.ps1
+```
+
+Use explicit serials when running ADB commands:
+
+```powershell
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell wm size
+```
+
+## Screen Coordinates
+
+AutoJs6 coordinate actions depend on the emulator resolution.
+
+Examples:
+
+```js
+click(500, 1200);
+press(500, 1200, 800);
+swipe(500, 1600, 500, 800, 500);
+```
+
+If the LDPlayer resolution changes, coordinate-based scripts may need to be updated.
+
+Record the emulator resolution for each script when possible:
+
+```text
+Resolution: 1280x720
+```
+
+## Screenshots
+
+Screenshots are useful for:
+
+- Finding button coordinates.
+- Choosing image-recognition targets.
+- Documenting what screen a script expects.
+
+Store screenshots in the project or the shared folder when they are needed for a script.
+
+Suggested project layout:
+
+```text
+scripts/
+screenshots/
+notes/
+WORKFLOW.md
+```
+
+## Safety Boundary
+
+Use this project for personal, offline, testing, accessibility, or non-competitive automation.
+
+Avoid building automation that gives unfair advantage in multiplayer or server-based games, such as automatic farming, ranking, economy, trading, or anti-cheat bypass behavior.
+
+## Future Notes Template
+
+When adding a new automation, record:
+
+```text
+Name:
+Target app/game:
+Purpose:
+Offline or online:
+LDPlayer resolution:
+Script path:
+Shared folder path:
+Required screenshots:
+Main actions:
+Stop condition:
+Known issues:
+```

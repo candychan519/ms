@@ -1,0 +1,4 @@
+interface:
+  display_name: "LDPlayer AutoJs6"
+  short_description: "Run and maintain LDPlayer AutoJs6 automation"
+  default_prompt: "Use $ldplayer-autojs6 to inspect LDPlayer, verify ADB, and update the automation workflow."

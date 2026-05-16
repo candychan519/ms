@@ -1,0 +1,24 @@
+# Local/generated artifacts
+downloads/
+screenshots/
+*.log
+
+# Android packages and captures
+*.apk
+*.xapk
+*.apks
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# OS/editor noise
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/
+
+# Secrets
+.env
+*.token
+*.key
