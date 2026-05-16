@@ -17,6 +17,7 @@ This repository stores the local workflow, scripts, tests, and Codex skill sourc
 ## Main Documents
 
 - `WORKFLOW.md`: entrypoint and documentation map
+- `MIGRATION.md`: restore this workspace on another Windows PC
 - `docs/SESSION_SUMMARY_2026-05-16.md`: completed setup summary
 - `docs/ENVIRONMENT.md`: current environment
 - `docs/TOOLS_AND_INSTALLATION.md`: tools and install notes

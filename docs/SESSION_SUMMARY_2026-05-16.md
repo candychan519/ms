@@ -62,7 +62,7 @@ This document summarizes the LDPlayer + AutoJs6 automation setup work completed 
 8. Tuned emulator settings:
    - Resolution changed from `1600x900` to `1280x720`.
    - DPI kept at `240`.
-   - Global FPS cap set to `30`.
+   - Global FPS cap restored to `60`.
 
 9. Created a reusable Codex skill:
    - Skill path: `C:\Users\user\.codex\skills\ldplayer-autojs6`

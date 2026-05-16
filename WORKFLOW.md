@@ -13,6 +13,7 @@ Use this file as the project entrypoint. Stable details are split by topic:
 - Recording rules: `docs/RECORDING_RULES.md`
 - Learning log: `logs/LEARNINGS.md`
 - Script source notes: `scripts/README.md`
+- Migration guide: `MIGRATION.md`
 - Session summary: `docs/SESSION_SUMMARY_2026-05-16.md`
 - ADB setup helper: `tools/setup-ldplayer-adb.ps1`
 - Bounded key input helper: `tools/send-ldplayer-key.ps1`

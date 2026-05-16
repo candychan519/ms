@@ -277,3 +277,17 @@ Added `tests/test-send-ldplayer-key.ps1`. The test verifies dry-run does not cal
 
 Next action:
 If a legitimate private/offline/accessibility test needs live input, start with `-DryRun`, then use a small live count such as `-Count 1` or `-Count 5`.
+
+## 2026-05-17 - Migration Guide Added
+
+Context:
+The user asked whether the current repository is enough for migrating to another PC, then asked to organize and finish the work.
+
+Finding:
+The repository already contains the source, scripts, tests, documentation, and versioned Codex skill source, but a target PC still needs LDPlayer, AutoJs6, Google Play login, MapleStory Worlds, Python/PyYAML, and local Codex skill installation.
+
+Decision:
+Added `MIGRATION.md` as the single entrypoint for restoring the workspace on another Windows PC. The guide documents cloned contents, intentionally ignored artifacts, install steps, LDPlayer settings, Codex skill restore, and verification commands.
+
+Next action:
+Use `MIGRATION.md` first when setting up a new PC, then run the validation commands before continuing automation work.
