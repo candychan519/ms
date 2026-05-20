@@ -174,6 +174,38 @@ The tool rejects unbounded runs. `DurationSeconds` is capped by `MaxDurationSeco
 4. Run small tests before long loops.
 5. Always include a stop condition for repeated actions.
 
+## Frida Verification
+
+Attach broad Frida bypass scripts to the protected target app process, not to AutoJs6. Keep AutoJs6 for UI automation and use Frida against the app under test, such as `com.nexon.mod`.
+
+Use benchmark apps for repeatable smoke tests when validating hook behavior:
+
+- HTTP Toolkit Android SSL Pinning Demo for SSL/pinning hook checks.
+- OWASP UnCrackable L1 for root-detection hook checks.
+
+Verify captured Frida logs with:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-frida-log.ps1 -LogPath .\downloads\frida\<log>.log
+```
+
+When the app process should see a coherent SM-N935F-like profile, load the hardware overlay after the main bypass script:
+
+```powershell
+& "$env:USERPROFILE\AppData\Roaming\Python\Python313\Scripts\frida.exe" -U -f com.nexon.mod `
+  -l .\downloads\frida\fdciabdul-frida-multiple-bypass-ldplayer.js `
+  -l .\tools\frida-spoof-process-hardware.js `
+  -o .\downloads\frida\nexon-hardware-spoof-headless.log
+```
+
+For temporary on-screen spoof-value inspection, add `downloads\frida\show-spoof-values.js`. Omit it for normal headless target-app runs.
+
+After an LDPlayer reboot, restart Frida server as root before spawning protected apps:
+
+```powershell
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell su -c '/data/local/tmp/frida-server >/dev/null 2>&1 &'
+```
+
 ## App Install Policy
 
 Use Google Play as the default source for Android apps and updates in LDPlayer.

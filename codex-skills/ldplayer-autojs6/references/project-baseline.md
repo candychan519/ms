@@ -94,3 +94,5 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key
 - Resolution changes require LDPlayer reboot before Android `wm size` changes.
 - Some graphics surfaces may appear black/blank with Windows `PrintWindow`; use ADB screenshots or foreground capture.
 - Google Play is the default install/update source for Android apps. Pause for user login when required.
+- After an LDPlayer reboot, restart `/data/local/tmp/frida-server` through `su -c` before spawning protected apps with Frida.
+- Use `tools\verify-frida-log.ps1` for Frida log smoke checks, and load `tools\frida-spoof-process-hardware.js` after the main bypass script when the target app process needs the SM-N935F-like hardware profile.
