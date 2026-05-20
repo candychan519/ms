@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 - Keep the repo, bundled skill, and installed skill Maple console copies synchronized.
 - Document benchmark APKs, Frida hook verification, hardware overlay usage, and root Frida server restart after LDPlayer reboot.
 - Generate dedicated Frida verification tutorial, how-to, reference, and explanation docs.
-- Simplified the LDPlayer AutoJs6 workflow docs and reusable skill guidance.
+- Simplify the LDPlayer AutoJs6 workflow docs and reusable skill guidance.
 - Cover minimap detection, Maple console controls, skill packaging, Frida verification, and layout sizing with focused PowerShell tests.
 
 ### Fixed

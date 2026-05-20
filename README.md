@@ -34,12 +34,17 @@ This repository stores the local workflow, scripts, tests, and Codex skill sourc
 - `tools/setup-ldplayer-adb.ps1`
 - `tools/capture-ldplayer.ps1`
 - `tools/send-ldplayer-key.ps1`
+- `tools/find-minimap-player-marker.ps1`
+- `tools/start-maple-console.ps1`
+- `tools/show-minimap-position-ui.ps1`
 - `tools/install-codex-skill.ps1`
 - `tools/verify-frida-log.ps1`
 - `tools/frida-spoof-process-hardware.js`
 - `tests/run-all.ps1`
 - `tests/test-ldplayer-adb-setup.ps1`
 - `tests/test-capture-ldplayer.ps1`
+- `tests/test-find-minimap-player-marker.ps1`
+- `tests/test-start-maple-console.ps1`
 - `tests/test-install-codex-skill.ps1`
 - `tests/test-ldplayer-autojs6-skill.ps1`
 - `tests/test-send-ldplayer-key.ps1`
