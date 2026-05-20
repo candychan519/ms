@@ -140,13 +140,24 @@ Watch live LDPlayer coordinates with ADB `screencap`:
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -Watch -IntervalMs 500
 ```
 
-Open a small Windows UI that keeps the current coordinate visible:
+Open the Maple console:
 
 ```powershell
-pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\show-minimap-position-ui.ps1
+pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\start-maple-console.ps1
 ```
 
+`start-maple-console.ps1` is the canonical Maple console. It should keep the current coordinate display plus the repeat controls: `A 누르기`, `A→왼쪽+F v2`, `D 사용`, `D 간격`, and the three map profiles `빅토리아로드 헤네시스동쪽풀숲`, `선셋로드 사헬지대2`, and `선셋로드 꿈꾸는 사막`. Do not replace it with a coordinate-only UI; create a separate helper if a temporary coordinate view is needed. `show-minimap-position-ui.ps1` is only a legacy wrapper for older commands.
+
 Use minimap-local coordinates for conversation, for example `minimap=(65,49)`.
+
+When changing this console, keep these copies synchronized:
+
+- `<repo>\tools\start-maple-console.ps1`
+- `<repo>\codex-skills\ldplayer-autojs6\scripts\start-maple-console.ps1`
+- `%USERPROFILE%\.codex\skills\ldplayer-autojs6\scripts\start-maple-console.ps1` when operating the installed skill locally
+- Keep `show-minimap-position-ui.ps1` as a wrapper that forwards to `start-maple-console.ps1`.
+
+Run `tests\test-start-maple-console.ps1` and inspect a real `메이플 콘솔` screenshot before reporting that the UI is fixed. UI Automation name checks do not prove Korean text is unclipped.
 
 ## Bounded Key Input
 

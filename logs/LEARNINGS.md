@@ -454,3 +454,37 @@ Started `com.nexon.mod` with `fdciabdul-frida-multiple-bypass-ldplayer.js`, `too
 
 Next action:
 After every LDPlayer reboot, confirm `frida-server` is running as root before launching `com.nexon.mod` through Frida.
+
+## 2026-05-21 - Maple Console Repeat UI Regression
+
+Context:
+The user reported that the opened Maple console was not the latest UI: the previous console had two repeat buttons, a periodic D checkbox, and three map profiles.
+
+Finding:
+`tools/show-minimap-position-ui.ps1` had been overwritten with a coordinate-only console, while the installed skill copy still had an older two-map A-repeat version. The expected latest behavior existed in prior session history: `A 누르기`, `A→왼쪽+F v2`, `D 사용`, `D 간격`, and the three profiles `빅토리아로드 헤네시스동쪽풀숲`, `선셋로드 사헬지대2`, and `선셋로드 꿈꾸는 사막`.
+
+Verification:
+Restored the repeat controls into `tools/show-minimap-position-ui.ps1`, synced the repo skill copy and installed Codex skill copy, updated `tests/test-show-minimap-position-ui.ps1`, and ran `tests/run-all.ps1`. The UI test now parses both script copies and checks that the bundled skill copy stays in sync with the tools copy. The opened `메이플 콘솔` window was also verified through Windows UI Automation to expose both repeat buttons, the D controls, and all three map names.
+
+Next action:
+If the console UI looks stale again, check both `tools/start-maple-console.ps1` and `%USERPROFILE%\.codex\skills\ldplayer-autojs6\scripts\start-maple-console.ps1`; both copies need to stay aligned. `show-minimap-position-ui.ps1` is only a legacy wrapper.
+
+Documentation:
+The console's canonical status is now documented in `WORKFLOW.md`, `docs/WORK_AND_DEVELOPMENT_METHOD.md`, and `codex-skills/ldplayer-autojs6/SKILL.md`: `start-maple-console.ps1` is the Maple console, not a coordinate-only scratch UI, and it must retain the repeat controls, three map profiles, copy synchronization, tests, and live screenshot layout check.
+
+Naming follow-up:
+The main console file was renamed from `show-minimap-position-ui.ps1` to `start-maple-console.ps1` because the old name made the file look like a minor coordinate helper. The old filename remains as a thin compatibility wrapper only.
+
+## 2026-05-21 - Maple Console Layout Clipping
+
+Context:
+After the repeat UI was restored, the user reported that the console window had become too small and Korean labels were clipped.
+
+Finding:
+The prior QA checked Windows UI Automation control names and bounds, but did not inspect a pixel screenshot. The actual screenshot showed clipped text on the `A→왼쪽+F v2` button and the `D 사용` / `D 간격` controls.
+
+Verification:
+Expanded the text-bearing controls enough to prevent clipping, then compacted the window back down after overcorrecting. The current verification screenshot is `downloads/qa/maple-console-qa-final-printwindow.png`, captured with `PrintWindow` because `CopyFromScreen` can miss the window on this multi-monitor/DPI setup. The captured window rectangle was about `746x340`. `tests/test-start-maple-console.ps1` asserts the compact layout dimensions and uses `System.Windows.Forms.TextRenderer.MeasureText` to verify key Korean labels fit inside their configured widths.
+
+Next action:
+For Windows Forms UI QA, always capture and inspect a real screenshot in addition to UI Automation name/bounds checks; name presence does not prove text is visually unclipped.

@@ -18,7 +18,7 @@ $tests = @(
   "test-verify-frida-log.ps1",
   "test-frida-spoof-process-hardware.ps1",
   "test-find-minimap-player-marker.ps1",
-  "test-show-minimap-position-ui.ps1",
+  "test-start-maple-console.ps1",
   "test-install-codex-skill.ps1",
   "test-ldplayer-autojs6-skill.ps1"
 )
