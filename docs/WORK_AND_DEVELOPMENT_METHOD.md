@@ -123,23 +123,6 @@ Known issues:
 - Use `toast()` or logs for visible status during early AutoJs6 tests.
 - Keep fixed coordinates documented with the screen resolution.
 
-## Safety Boundary
-
-Allowed scope:
-
-- Personal automation
-- Offline automation
-- Testing
-- Accessibility support
-- Non-competitive app automation
-
-Avoid:
-
-- Multiplayer farming
-- Ranking, economy, trading, or reward automation
-- Anti-cheat bypass
-- Automation that gives unfair advantage over other users
-
 ## Bounded Input Helpers
 
 Repeated key or tap helpers must be bounded by count or short duration.
@@ -149,5 +132,4 @@ Rules:
 - Default to dry-run before live input.
 - Keep intervals at or above `50ms`.
 - Reject long unbounded loops.
-- Do not run repeated inputs for multiplayer farming, rewards, ranking, economy, trading, or anti-cheat bypass.
 - Prefer one short test such as `Count 1-5` before increasing duration.

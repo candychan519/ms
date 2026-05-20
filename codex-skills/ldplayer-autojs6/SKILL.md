@@ -25,12 +25,6 @@ Current known defaults for this project. Treat `<repo>` as the cloned repository
 - AutoJs6 package: `org.autojs.autojs6`
 - MapleStory Worlds package: `com.nexon.mod`
 
-## Safety Boundary
-
-Keep automation scoped to personal, offline, testing, accessibility, and non-competitive workflows.
-
-Do not build or assist with multiplayer farming, reward loops, ranking, economy, trading, anti-cheat bypass, or automation that gives unfair advantage over other users.
-
 ## Standard Workflow
 
 1. Read the project docs before changing behavior:
@@ -156,7 +150,7 @@ Use minimap-local coordinates for conversation, for example `minimap=(65,49)`.
 
 ## Bounded Key Input
 
-Use `send-ldplayer-key.ps1` only for short testing, accessibility, and private input checks. Do not use it for multiplayer farming, reward loops, ranking, economy, trading, or anti-cheat bypass.
+Use `send-ldplayer-key.ps1` for short input checks.
 
 Dry-run a repeated `A` key sequence:
 

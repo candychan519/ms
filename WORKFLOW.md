@@ -226,12 +226,6 @@ notes/
 WORKFLOW.md
 ```
 
-## Safety Boundary
-
-Use this project for personal, offline, testing, accessibility, or non-competitive automation.
-
-Avoid building automation that gives unfair advantage in multiplayer or server-based games, such as automatic farming, reward loops, ranking, economy, trading, or anti-cheat bypass behavior.
-
 ## Future Notes Template
 
 When adding a new automation, record:

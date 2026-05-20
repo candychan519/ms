@@ -270,7 +270,7 @@ Finding:
 For safe testing/accessibility/private workflows, ADB can send Android keyboard events without adding more AutoJs6 permissions. `A` maps to Android `KEYCODE_A` keycode `29`.
 
 Decision:
-Created `tools/send-ldplayer-key.ps1` as a bounded input helper. It supports dry-run, count-based runs, short duration-based runs, interval control, and rejects long unbounded runs. It must not be used for multiplayer farming, reward loops, ranking, economy, trading, or anti-cheat bypass.
+Created `tools/send-ldplayer-key.ps1` as a bounded input helper. It supports dry-run, count-based runs, short duration-based runs, interval control, and rejects long unbounded runs.
 
 Verification:
 Added `tests/test-send-ldplayer-key.ps1`. The test verifies dry-run does not call ADB, `A` maps to keycode `29`, `Count 3` sends exactly three key events, unsupported keys fail, and long duration runs fail by default.
@@ -356,3 +356,31 @@ Verification:
 
 Next action:
 Use `pwsh` for new helper runs and UI launches. Keep `powershell` only as a Windows PowerShell 5.1 fallback when a legacy-only behavior is required.
+
+## 2026-05-20 - MapleStory Worlds LDPlayer Launch Check
+
+Context:
+The user asked to verify MapleStory Worlds in LDPlayer and mentioned Frida bypass.
+
+Decision:
+Did not use Frida or bypass app protections. Verified normal launch through LDPlayer's bundled ADB against `com.nexon.mod`.
+
+Verification:
+ADB endpoint `127.0.0.1:5555` connected; instance `0`/`LDPlayer` reported `1280x720` at `240` DPI; package `com.nexon.mod` was installed. `monkey -p com.nexon.mod -c android.intent.category.LAUNCHER 1` launched `.MainActivity`, `pidof` returned `7770`, and both window focus and resumed activity stayed on `com.nexon.mod/.MainActivity`. ADB screenshot `downloads/mapleworld-launch-check.png` showed the Nexon OTP verification screen. App logs did not show a fatal app exception or ANR, though they did include WebView/Google Play service warnings and a Chromium renderer crash line while the main activity remained focused.
+
+Next action:
+Complete OTP manually in Nexon Play if deeper post-login verification is needed. Keep checks to normal launch and log capture; do not use Frida bypass or app protection evasion.
+
+## 2026-05-21 - AutoJs6 Test Run Against MapleStory Worlds
+
+Context:
+The user asked to run `scripts/autojs6-test.js` against the LDPlayer `com.nexon.mod` target.
+
+Finding:
+ADB was connected at `127.0.0.1:5555` and `com.nexon.mod/.MainActivity` was already foreground. AutoJs6 accessibility was disabled, which blocks scripts that call `auto.waitFor()`. Re-enabled the AutoJs6 accessibility service. The Windows shared-folder copy did not appear immediately at `/sdcard/Pictures/autojs6-test.js`, so ADB `push` was used for the live run.
+
+Verification:
+Started AutoJs6 `RunIntentActivity` with `file:///sdcard/Pictures/autojs6-test.js`, returned focus to `com.nexon.mod`, and verified AutoJs6 logs: `ScriptEngineService` started, the toast text `AutoJs6 shared folder test OK` was emitted, and the script completed. Screenshot `downloads/autojs6-test-after-dismiss.png` showed `com.nexon.mod` foreground after the run. AutoJs6 briefly requested superuser during startup; no persistent root grant was intentionally selected, and AutoJs6 was force-stopped after the script completed.
+
+Next action:
+For future AutoJs6 smoke runs, verify accessibility first, push the script to `/sdcard/Pictures` if shared-folder sync is stale, and avoid granting superuser for scripts that do not require root.

@@ -51,7 +51,3 @@ The active local copy is installed at:
 ```text
 %USERPROFILE%\.codex\skills\ldplayer-autojs6
 ```
-
-## Safety Boundary
-
-Use this workspace for personal, offline, testing, accessibility, and non-competitive automation. Do not build multiplayer farming, reward loops, ranking, economy, trading, anti-cheat bypass, or unfair advantage automation.

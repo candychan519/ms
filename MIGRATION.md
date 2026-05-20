@@ -252,7 +252,3 @@ These are intentionally not restored by Git:
 - local Codex runtime state
 
 Recreate these manually on the target PC.
-
-## Safety Boundary
-
-Use this workspace for personal, offline, testing, accessibility, and non-competitive automation. Do not build or run multiplayer farming, reward loops, ranking, economy, trading, anti-cheat bypass, or unfair advantage automation.

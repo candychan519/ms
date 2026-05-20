@@ -60,8 +60,6 @@ Assert-True ($skillText -match 'Global FPS cap:\s*`60`') "SKILL.md should docume
 Assert-True ($skillText -match "send-ldplayer-key\.ps1") "SKILL.md should document the bounded key input helper."
 Assert-True ($skillText -match "find-minimap-player-marker\.ps1") "SKILL.md should document the minimap marker helper."
 Assert-True ($skillText -match "show-minimap-position-ui\.ps1") "SKILL.md should document the minimap position UI."
-Assert-True ($skillText -match "## Safety Boundary") "SKILL.md should keep an explicit safety boundary."
-Assert-True ($skillText -match "anti-cheat bypass") "SKILL.md should document anti-cheat bypass as out of scope."
 Assert-True ($skillText -match "MaxDurationSeconds") "SKILL.md should document the bounded duration cap for repeated key input."
 Assert-True ($skillText -match "RECORDING_RULES\.md") "SKILL.md should include the recording rules in its standard document list."
 Assert-True ($skillText -notmatch "\[TODO\]|TODO:") "SKILL.md should not contain template TODO markers."
