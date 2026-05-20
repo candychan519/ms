@@ -21,6 +21,10 @@ This repository stores the local workflow, scripts, tests, and Codex skill sourc
 - `docs/SESSION_SUMMARY_2026-05-16.md`: completed setup summary
 - `docs/ENVIRONMENT.md`: current environment
 - `docs/TOOLS_AND_INSTALLATION.md`: tools and install notes
+- `docs/TUTORIAL_FRIDA_HOOK_SMOKE_TEST.md`: tutorial for the Frida benchmark smoke test
+- `docs/HOW_TO_VERIFY_FRIDA_HOOKS.md`: how-to guide for benchmark and target-app Frida verification
+- `docs/FRIDA_HOOK_VERIFICATION_REFERENCE.md`: reference for the Frida log verifier and hardware overlay
+- `docs/WHY_FRIDA_VERIFICATION_IS_APP_PROCESS_SCOPED.md`: explanation of the app-process-scoped verification model
 - `docs/USAGE_AND_SHARING.md`: usage and shared folder workflow
 - `docs/WORK_AND_DEVELOPMENT_METHOD.md`: TDD, multi-agent, and safety rules
 - `logs/LEARNINGS.md`: append-only findings and decisions

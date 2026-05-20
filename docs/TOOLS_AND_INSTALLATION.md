@@ -71,6 +71,13 @@ AutoJs6 was verified by:
 
 Frida hook verification uses `tools/verify-frida-log.ps1` against logs produced by benchmark apps. The helper checks required hook markers, forbidden crash/ANR markers, and allowed warnings.
 
+Detailed Frida docs:
+
+- Tutorial: `docs\TUTORIAL_FRIDA_HOOK_SMOKE_TEST.md`
+- How-to: `docs\HOW_TO_VERIFY_FRIDA_HOOKS.md`
+- Reference: `docs\FRIDA_HOOK_VERIFICATION_REFERENCE.md`
+- Explanation: `docs\WHY_FRIDA_VERIFICATION_IS_APP_PROCESS_SCOPED.md`
+
 Benchmark APKs used:
 
 - HTTP Toolkit Android SSL Pinning Demo `v1.6.1`: `downloads\benchmarks\pinning-demo-v1.6.1.apk`

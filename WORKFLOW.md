@@ -8,6 +8,10 @@ Use this file as the project entrypoint. Stable details are split by topic:
 
 - Environment info: `docs/ENVIRONMENT.md`
 - Tools and installation: `docs/TOOLS_AND_INSTALLATION.md`
+- Frida smoke-test tutorial: `docs/TUTORIAL_FRIDA_HOOK_SMOKE_TEST.md`
+- Frida verification how-to: `docs/HOW_TO_VERIFY_FRIDA_HOOKS.md`
+- Frida verification reference: `docs/FRIDA_HOOK_VERIFICATION_REFERENCE.md`
+- Frida verification rationale: `docs/WHY_FRIDA_VERIFICATION_IS_APP_PROCESS_SCOPED.md`
 - Usage and sharing: `docs/USAGE_AND_SHARING.md`
 - Work and development method: `docs/WORK_AND_DEVELOPMENT_METHOD.md`
 - Recording rules: `docs/RECORDING_RULES.md`

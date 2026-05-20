@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - Document benchmark APKs, Frida hook verification, hardware overlay usage, and root Frida server restart after LDPlayer reboot.
+- Generate dedicated Frida verification tutorial, how-to, reference, and explanation docs.
 - Record Frida/LDPlayer/Nexon validation findings in the learning log.
 
 ## [0.1.0.0] - 2026-05-21
