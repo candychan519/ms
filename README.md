@@ -23,6 +23,7 @@ This repository stores the local workflow, scripts, tests, and Codex skill sourc
 - `docs/TOOLS_AND_INSTALLATION.md`: tools and install notes
 - `docs/TUTORIAL_FRIDA_HOOK_SMOKE_TEST.md`: tutorial for the Frida benchmark smoke test
 - `docs/HOW_TO_VERIFY_FRIDA_HOOKS.md`: how-to guide for benchmark and target-app Frida verification
+- `docs/HOW_TO_USE_MAPLE_CONSOLE.md`: how-to guide for the Maple console and repeat controls
 - `docs/FRIDA_HOOK_VERIFICATION_REFERENCE.md`: reference for the Frida log verifier and hardware overlay
 - `docs/WHY_FRIDA_VERIFICATION_IS_APP_PROCESS_SCOPED.md`: explanation of the app-process-scoped verification model
 - `docs/USAGE_AND_SHARING.md`: usage and shared folder workflow

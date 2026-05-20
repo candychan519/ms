@@ -32,6 +32,7 @@ Current known defaults for this project. Treat `<repo>` as the cloned repository
    - `<repo>\MIGRATION.md`
    - `<repo>\docs\ENVIRONMENT.md`
    - `<repo>\docs\TOOLS_AND_INSTALLATION.md`
+   - `<repo>\docs\HOW_TO_USE_MAPLE_CONSOLE.md`
    - `<repo>\docs\USAGE_AND_SHARING.md`
    - `<repo>\docs\WORK_AND_DEVELOPMENT_METHOD.md`
    - `<repo>\docs\RECORDING_RULES.md`
@@ -158,6 +159,8 @@ When changing this console, keep these copies synchronized:
 - Keep `show-minimap-position-ui.ps1` as a wrapper that forwards to `start-maple-console.ps1`.
 
 Run `tests\test-start-maple-console.ps1` and inspect a real `메이플 콘솔` screenshot before reporting that the UI is fixed. UI Automation name checks do not prove Korean text is unclipped.
+
+For task-oriented operating steps, read `<repo>\docs\HOW_TO_USE_MAPLE_CONSOLE.md`.
 
 ## Bounded Key Input
 
