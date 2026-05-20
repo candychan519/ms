@@ -14,6 +14,22 @@ This repository stores the local workflow, scripts, tests, and Codex skill sourc
 - MapleStory Worlds package: `com.nexon.mod`
 - Shared folder: `%USERPROFILE%\Documents\XuanZhi9\Pictures` -> `/sdcard/Pictures`
 
+## Start Maple Console
+
+Open the Maple console from the repository root:
+
+```powershell
+pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\start-maple-console.ps1
+```
+
+Use `-TopMost` to keep the console above LDPlayer:
+
+```powershell
+pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\start-maple-console.ps1 -TopMost
+```
+
+The console window title is `메이플 콘솔`. It includes the minimap coordinate watcher, three map profiles, `A 누르기`, `A→왼쪽+F v2`, and periodic `D` controls. For the full operating guide, read `docs/HOW_TO_USE_MAPLE_CONSOLE.md`.
+
 ## Main Documents
 
 - `WORKFLOW.md`: entrypoint and documentation map
