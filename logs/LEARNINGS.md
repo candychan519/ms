@@ -384,3 +384,73 @@ Started AutoJs6 `RunIntentActivity` with `file:///sdcard/Pictures/autojs6-test.j
 
 Next action:
 For future AutoJs6 smoke runs, verify accessibility first, push the script to `/sdcard/Pictures` if shared-folder sync is stale, and avoid granting superuser for scripts that do not require root.
+
+## 2026-05-21 - Frida fdciabdul Script Against AutoJs6
+
+Context:
+The user asked to run AutoJs6 using `downloads/frida/fdciabdul-frida-multiple-bypass-ldplayer.js`.
+
+Finding:
+The file is a Frida hook script, not an AutoJs6 script. Running it with `frida -U -f org.autojs.autojs6 -l ...` loaded the hooks but AutoJs6 crashed during `MainActivity` startup. Starting AutoJs6 first and then attaching with `frida -U -p <pid> -l ...` also loaded the hooks but left AutoJs6 in an ANR state. The script hooks `getprop`, `su`, `Runtime.exec`, `ProcessBuilder`, display metrics, and SSL pinning APIs, which is too broad for AutoJs6 itself.
+
+Verification:
+Frida logs showed `Display spoof enabled`, `BypassNativeNow`, and `Unpinning setup completed`. Android logs showed AutoJs6 `MainActivity` startup failure on the spawn attempt and `Application Not Responding: org.autojs.autojs6` on the attach attempt. The failed Frida processes were stopped, and no persistent root grant was selected.
+
+Next action:
+Do not attach this bypass script to AutoJs6. If a Frida bypass is needed, attach it to the protected target app process, then run AutoJs6 separately for UI automation.
+
+## 2026-05-21 - Frida fdciabdul Script Against com.nexon.mod
+
+Context:
+The user asked to run `downloads/frida/fdciabdul-frida-multiple-bypass-ldplayer.js` against `com.nexon.mod` instead of AutoJs6.
+
+Finding:
+Started `com.nexon.mod` through Frida with `frida -U -f com.nexon.mod -l ...`. The target app stayed foreground as `com.nexon.mod/.MainActivity`, and the Frida process remained attached. The script logged display spoof setup, native bypass setup, SSL unpinning setup, and live bypass activity for Nexon endpoints including `m-api.nexon.com`, `sdk-push.mp.nexon.com`, `gtable.inface.nexon.com`, and `public.api.nexon.com`. One script-side `TypeError: not a function` occurred at line 724, but the Frida session and target app continued running.
+
+Verification:
+ADB reported `com.nexon.mod` PID `12908`, with window focus on `com.nexon.mod/.MainActivity`. Screenshot `downloads/frida/nexon-frida-current.png` showed the MapleStory Worlds home screen loaded. Frida log path: `downloads/frida/nexon-fdciabdul-frida.log`.
+
+Next action:
+Keep the Windows `frida.exe`/`python.exe` process alive while the hooks are needed. Stop that process or force-stop `com.nexon.mod` when done.
+
+## 2026-05-21 - Frida Benchmark Verification With TDD And Multi-Agent
+
+Context:
+The user asked to verify the Frida hook with benchmark apps, explicitly using multi-agent work and reflecting TDD.
+
+Finding:
+Used one explorer agent to evaluate public benchmark apps and one worker agent to design the TDD log-verification harness. Added `tools/verify-frida-log.ps1`, `tests/test-verify-frida-log.ps1`, and included the test in `tests/run-all.ps1`. The test was added first, failed because the helper did not exist, then passed after the helper was implemented and stabilized for PowerShell 7.6 result serialization.
+
+Verification:
+Installed official benchmark APKs into LDPlayer: HTTP Toolkit Android SSL Pinning Demo `v1.6.1` as `tech.httptoolkit.pinning_demo`, and OWASP UnCrackable L1 as `owasp.mstg.uncrackable1`. HTTP Toolkit produced live Frida bypass logs for OkHTTP and Appmattus hooks; visible button results included successful Context, OkHTTP, Volley, TrustKit, and Appmattus+OkHttp CT requests, while Appmattus CT alone still failed on hostname verification. OWASP UnCrackable L1 showed `Root detected!` without Frida, then reached the normal `Enter the Secret String` screen with Frida and logged `Anti Root Detect` file checks. `tests/run-all.ps1` passed.
+
+Next action:
+Use HTTP Toolkit Demo for SSL hook smoke tests and OWASP UnCrackable L1 for root-detection smoke tests. For stronger SSL pass/fail proof, repeat HTTP Toolkit with an explicit HTTPS interception proxy/CA setup so pinned requests fail without Frida and pass with Frida.
+
+## 2026-05-21 - Frida Process Hardware Profile Overlay
+
+Context:
+The user asked how to make CPU, GPU, core count, and memory match the values seen inside the hooked app process.
+
+Finding:
+The main `fdciabdul-frida-multiple-bypass-ldplayer.js` script already spoofs Build/device/display values and forces `android_getCpuFamily()` toward ARM64, but it did not spoof Java-visible processor count, GPU strings, memory info, or CPU ABI fields consistently. Added `tools/frida-spoof-process-hardware.js` as a separate overlay so the original bypass script can remain unchanged.
+
+Verification:
+Added `tests/test-frida-spoof-process-hardware.ps1` and included it in `tests/run-all.ps1`. The test first failed while the overlay was missing, then passed after the overlay was added. Live validation against HTTP Toolkit Demo produced `downloads/frida/httptoolkit-hardware-spoof.log` with `cpuAbi=arm64-v8a`, `cpuCores=8`, `gpu.renderer=Mali-T880`, `gpu.version=OpenGL ES 3.2`, and `memory.totalMem=4294967296`. `tests/run-all.ps1` passed.
+
+Next action:
+Load the overlay after the main bypass script for targets that need the coherent SM-N935F/Exynos-style hardware profile.
+
+## 2026-05-21 - LDPlayer Reboot And com.nexon.mod Hardware Overlay Run
+
+Context:
+The user asked to restart LDPlayer and test `com.nexon.mod` with the Frida hardware overlay.
+
+Finding:
+After LDPlayer reboot, the first Frida spawn attempt failed with `need Gadget to attach on jailed Android` because Frida server was not running as root. Starting `/data/local/tmp/frida-server` through `su -c` restored spawn/attach support.
+
+Verification:
+Started `com.nexon.mod` with `fdciabdul-frida-multiple-bypass-ldplayer.js`, `tools/frida-spoof-process-hardware.js`, and `downloads/frida/show-spoof-values.js`. ADB reported app PID `3989` and focus on `com.nexon.mod/.MainActivity`. `downloads/frida/nexon-hardware-spoof.log` verified `cpuAbi=arm64-v8a`, `cpuCores=8`, `gpu.renderer=Mali-T880`, `memory.totalMem=4294967296`, and a live OkHTTP bypass for `m-api.nexon.com`. No fatal exception, ANR, or application-not-responding marker was present; the known line 724 `TypeError: not a function` warning remained non-fatal.
+
+Next action:
+After every LDPlayer reboot, confirm `frida-server` is running as root before launching `com.nexon.mod` through Frida.

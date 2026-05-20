@@ -15,6 +15,8 @@ $tests = @(
   "test-ldplayer-adb-setup.ps1",
   "test-send-ldplayer-key.ps1",
   "test-capture-ldplayer.ps1",
+  "test-verify-frida-log.ps1",
+  "test-frida-spoof-process-hardware.ps1",
   "test-find-minimap-player-marker.ps1",
   "test-show-minimap-position-ui.ps1",
   "test-install-codex-skill.ps1",

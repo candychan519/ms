@@ -69,6 +69,48 @@ AutoJs6 was verified by:
 - Enabling required permissions.
 - Importing and running `autojs6-test`.
 
+Frida hook verification uses `tools/verify-frida-log.ps1` against logs produced by benchmark apps. The helper checks required hook markers, forbidden crash/ANR markers, and allowed warnings.
+
+Benchmark APKs used:
+
+- HTTP Toolkit Android SSL Pinning Demo `v1.6.1`: `downloads\benchmarks\pinning-demo-v1.6.1.apk`
+- OWASP UnCrackable L1: `downloads\benchmarks\UnCrackable-Level1.apk`
+
+Example log verification:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\httptoolkit-pinning-fdciabdul.log' -RequirePattern @('BypassNativeNow','Unpinning setup completed','Bypassing OkHTTPv3') -ForbidPattern @('FATAL EXCEPTION','Application Not Responding','ANR')"
+```
+
+### Frida Hardware Profile Overlay
+
+Use `tools\frida-spoof-process-hardware.js` after the main bypass script when the app process should see a coherent SM-N935F-like hardware profile:
+
+- CPU ABI: `arm64-v8a`
+- CPU cores: `8`
+- GPU: `ARM / Mali-T880 / OpenGL ES 3.2`
+- Memory: `4294967296` bytes total, `2147483648` bytes available
+
+Example launch:
+
+```powershell
+& "$env:USERPROFILE\AppData\Roaming\Python\Python313\Scripts\frida.exe" -U -f tech.httptoolkit.pinning_demo `
+  -l .\downloads\frida\fdciabdul-frida-multiple-bypass-ldplayer.js `
+  -l .\tools\frida-spoof-process-hardware.js `
+  -l .\downloads\frida\show-spoof-values.js `
+  -o .\downloads\frida\httptoolkit-hardware-spoof.log
+```
+
+For MapleStory Worlds, replace `tech.httptoolkit.pinning_demo` with `com.nexon.mod`.
+
+For normal headless target-app runs, omit `downloads\frida\show-spoof-values.js`; that script is only for temporarily displaying the spoofed values on screen.
+
+After an LDPlayer reboot, restart Frida server as root before spawning protected apps. If Frida reports `need Gadget to attach on jailed Android`, run:
+
+```powershell
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell su -c '/data/local/tmp/frida-server >/dev/null 2>&1 &'
+```
+
 ## Required Permissions
 
 - Overlay permission: needed for AutoJs6 floating controls and UI behavior.

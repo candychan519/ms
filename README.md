@@ -31,12 +31,16 @@ This repository stores the local workflow, scripts, tests, and Codex skill sourc
 - `tools/capture-ldplayer.ps1`
 - `tools/send-ldplayer-key.ps1`
 - `tools/install-codex-skill.ps1`
+- `tools/verify-frida-log.ps1`
+- `tools/frida-spoof-process-hardware.js`
 - `tests/run-all.ps1`
 - `tests/test-ldplayer-adb-setup.ps1`
 - `tests/test-capture-ldplayer.ps1`
 - `tests/test-install-codex-skill.ps1`
 - `tests/test-ldplayer-autojs6-skill.ps1`
 - `tests/test-send-ldplayer-key.ps1`
+- `tests/test-verify-frida-log.ps1`
+- `tests/test-frida-spoof-process-hardware.ps1`
 
 ## Skill Source
 
