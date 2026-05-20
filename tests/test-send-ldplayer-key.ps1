@@ -6,6 +6,13 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $scriptPath = Join-Path $repoRoot "tools\send-ldplayer-key.ps1"
 $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("ldplayer-key-tests-" + [guid]::NewGuid().ToString("N"))
+$powerShellExe = (Get-Process -Id $PID).Path
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command pwsh -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source)
+}
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command powershell -ErrorAction Stop | Select-Object -First 1 -ExpandProperty Source)
+}
 $failures = New-Object System.Collections.Generic.List[string]
 
 function Add-Failure {
@@ -72,7 +79,7 @@ try {
   New-Item -ItemType Directory -Path $tempRoot -Force | Out-Null
   $fake = New-FakeAdb -Directory $tempRoot
 
-  $dryRun = & powershell -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
+  $dryRun = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
     -AdbPath $fake.Path `
     -Serial "127.0.0.1:5555" `
     -Key "A" `
@@ -83,7 +90,7 @@ try {
   Assert-True (($dryRun -join "`n") -match "KEYCODE_A.*29") "Dry-run should show A mapped to keycode 29."
   Assert-True (-not (Test-Path -LiteralPath $fake.LogPath)) "Dry-run should not invoke ADB."
 
-  $run = & powershell -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
+  $run = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
     -AdbPath $fake.Path `
     -Serial "127.0.0.1:5555" `
     -Key "A" `
@@ -98,7 +105,7 @@ try {
   $invalidOut = Join-Path $tempRoot "invalid.out"
   $invalidErr = Join-Path $tempRoot "invalid.err"
   $invalidProcess = Start-Process `
-    -FilePath "powershell" `
+    -FilePath $powerShellExe `
     -ArgumentList @(
       "-NoProfile",
       "-ExecutionPolicy", "Bypass",
@@ -117,7 +124,7 @@ try {
   $longOut = Join-Path $tempRoot "long.out"
   $longErr = Join-Path $tempRoot "long.err"
   $longProcess = Start-Process `
-    -FilePath "powershell" `
+    -FilePath $powerShellExe `
     -ArgumentList @(
       "-NoProfile",
       "-ExecutionPolicy", "Bypass",

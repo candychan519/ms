@@ -10,6 +10,13 @@
 - GitHub Releases: AutoJs6 APK 다운로드 출처
 - Windows Explorer shared folder: LDPlayer와 스크립트 파일 공유
 
+## Installed PowerShell
+
+- Version: `7.6.1`
+- Command: `pwsh`
+- Install source: `winget` package `Microsoft.PowerShell`
+- Use `pwsh` for project helper scripts, tests, and UI launch. Windows PowerShell 5.1 remains available as `powershell`.
+
 ## Installed AutoJs6
 
 - Version: `v6.7.0`
@@ -82,7 +89,7 @@ Current setup:
 Setup and validation command:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Manual checks:
@@ -148,5 +155,5 @@ python -m pip install PyYAML
 Project test for the skill:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-autojs6-skill.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-autojs6-skill.ps1
 ```

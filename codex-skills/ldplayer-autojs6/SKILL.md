@@ -29,7 +29,7 @@ Current known defaults for this project. Treat `<repo>` as the cloned repository
 
 Keep automation scoped to personal, offline, testing, accessibility, and non-competitive workflows.
 
-Do not build or assist with multiplayer farming, ranking, economy, trading, anti-cheat bypass, or automation that gives unfair advantage over other users.
+Do not build or assist with multiplayer farming, reward loops, ranking, economy, trading, anti-cheat bypass, or automation that gives unfair advantage over other users.
 
 ## Standard Workflow
 
@@ -57,13 +57,13 @@ Do not build or assist with multiplayer farming, ranking, economy, trading, anti
 Validate the current LDPlayer ADB endpoint:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Or use the bundled skill copy:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\ldplayer-autojs6\scripts\setup-ldplayer-adb.ps1" -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\ldplayer-autojs6\scripts\setup-ldplayer-adb.ps1" -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Manual checks:
@@ -125,25 +125,49 @@ Prefer ADB screenshots when ADB is healthy:
 Use non-obstructing Windows capture when the user is working in another window:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
 ```
 
 If `PrintWindow` returns black/blank for graphics surfaces, use ADB `screencap` or briefly foreground LDPlayer and capture the screen region.
 
+## Minimap Player Marker
+
+Use `find-minimap-player-marker.ps1` to detect the yellow MapleStory Worlds player marker in the top-left minimap. It reports minimap-local coordinates, normalized minimap percentages, and full-screen coordinates.
+
+Analyze a saved screenshot:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -ImagePath .\screenshots\ldplayer-current-pull.png
+```
+
+Watch live LDPlayer coordinates with ADB `screencap`:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -Watch -IntervalMs 500
+```
+
+Open a small Windows UI that keeps the current coordinate visible:
+
+```powershell
+pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\show-minimap-position-ui.ps1
+```
+
+Use minimap-local coordinates for conversation, for example `minimap=(65,49)`.
+
 ## Bounded Key Input
 
-Use `send-ldplayer-key.ps1` only for short testing/accessibility/private workflows. Do not use it for multiplayer farming, reward loops, ranking, economy, or anti-cheat bypass.
+Use `send-ldplayer-key.ps1` only for short testing, accessibility, and private input checks. Do not use it for multiplayer farming, reward loops, ranking, economy, trading, or anti-cheat bypass.
 
 Dry-run a repeated `A` key sequence:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
 ```
 
-Send a short bounded sequence:
+Send a short bounded key sequence:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250
 ```
 
 The tool rejects unbounded runs. `DurationSeconds` is capped by `MaxDurationSeconds` and defaults to a maximum of `30` seconds.

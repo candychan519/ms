@@ -5,6 +5,13 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $scriptPath = Join-Path $repoRoot "tools\capture-ldplayer.ps1"
+$powerShellExe = (Get-Process -Id $PID).Path
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command pwsh -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source)
+}
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command powershell -ErrorAction Stop | Select-Object -First 1 -ExpandProperty Source)
+}
 $failures = New-Object System.Collections.Generic.List[string]
 
 function Add-Failure {
@@ -32,7 +39,7 @@ Assert-True ($scriptText -match "Write-Output") "Capture helper should output th
 
 $ldplayer = Get-Process dnplayer -ErrorAction SilentlyContinue | Select-Object -First 1
 if ($ldplayer) {
-  $output = & powershell -NoProfile -ExecutionPolicy Bypass -File $scriptPath 2>&1
+  $output = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath 2>&1
   Assert-True ($LASTEXITCODE -eq 0) "Capture helper should run when LDPlayer is running. Output: $($output -join ' ')"
   $shotPath = @($output)[-1].ToString()
   Assert-True (Test-Path -LiteralPath $shotPath -PathType Leaf) "Capture helper should create an image file: $shotPath"

@@ -81,10 +81,10 @@ Capture through ADB:
 & 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 pull /sdcard/Pictures/shot.png .\downloads\shot.png
 ```
 
-Dry-run a bounded `A` key test:
+Dry-run an `A` key test:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
 ```
 
 ## Known Caveats

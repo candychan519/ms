@@ -56,7 +56,7 @@ Use this loop for PowerShell helpers, ADB setup scripts, capture helpers, input 
 Run all tests:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-all.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\run-all.ps1
 ```
 
 ## Multi-Agent Work Method
@@ -79,11 +79,13 @@ Preferred methods:
 
 - Use ADB `screencap` when ADB is healthy.
 - Use `tools/capture-ldplayer.ps1` when the user is working in another window and non-obstructing capture is needed.
+- Use `tools/find-minimap-player-marker.ps1 -Watch` when the user wants live minimap player coordinates for communication or visual debugging.
+- Use `tools/show-minimap-position-ui.ps1` when the coordinate should stay visible in a small Windows UI.
 
 Command:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
 ```
 
 The wait should match the action:

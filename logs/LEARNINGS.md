@@ -51,7 +51,7 @@ Decision:
 The base automation environment is ready for simple AutoJs6 scripts using `auto.waitFor()`, `toast()`, and `click()`.
 
 Next action:
-For each new macro, record target, purpose, resolution, script path, actions, stop condition, and test result.
+For each new macro, record target, purpose, resolution, script path, actions, and test result.
 
 ## 2026-05-16 - MapleStory Worlds Install Attempt
 
@@ -308,3 +308,51 @@ Use `tests/run-all.ps1` as the default pre-push verification command.
 
 Verification:
 `tests/run-all.ps1` passed after the hardening changes. The LDPlayer-only live capture assertion was skipped because LDPlayer was not running, but the static capture checks passed. The repo skill passed `quick_validate.py`, and the active Codex skill was reinstalled from `codex-skills/ldplayer-autojs6`.
+
+## 2026-05-17 - Live Minimap Player Coordinate Tool
+
+Context:
+The user wants a shared coordinate reference from the LDPlayer minimap while discussing navigation and visual debugging.
+
+Finding:
+The yellow player marker can be detected from the top-left minimap using a constrained yellow connected-component search inside the default minimap bounds `x=8 y=96 width=207 height=101` on the current `1280x720` LDPlayer baseline.
+
+Decision:
+Added `tools/find-minimap-player-marker.ps1`. It can analyze a saved screenshot with `-ImagePath` or monitor live LDPlayer output with `-Watch` using ADB `screencap`. It reports minimap-local coordinates, normalized minimap percentages, full-screen coordinates, marker pixel count, and confidence.
+
+Verification:
+`tests/test-find-minimap-player-marker.ps1`, `tests/test-ldplayer-autojs6-skill.ps1`, and `tests/run-all.ps1` passed. The versioned Codex skill was updated and reinstalled to `%USERPROFILE%\.codex\skills\ldplayer-autojs6`.
+
+Next action:
+Use minimap-local coordinates like `minimap=(x,y)` when discussing the character's position. Recheck minimap bounds if LDPlayer resolution or the app UI layout changes.
+
+## 2026-05-17 - Minimap Position UI
+
+Context:
+The user asked for a simple program with a UI that displays the current character coordinate.
+
+Decision:
+Added `tools/show-minimap-position-ui.ps1`, a small Windows Forms monitor that reuses `tools/find-minimap-player-marker.ps1`. The UI shows the current `minimap=(x,y)` coordinate, normalized minimap percentage, full-screen coordinate, confidence, pixel count, update time, pause/start control, and a copy button.
+
+Verification:
+`tests/test-show-minimap-position-ui.ps1`, `tests/test-ldplayer-autojs6-skill.ps1`, and `tests/run-all.ps1` passed.
+
+Launch note:
+Because this repository path contains a space in `바탕 화면`, external `Start-Process` launches must quote the `-File` script path. Running from the repo can use `powershell -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\show-minimap-position-ui.ps1`.
+
+Next action:
+Keep this UI open when discussing navigation. Use its large `minimap=(x,y)` value as the shared reference coordinate.
+
+## 2026-05-17 - PowerShell 7.6.1 Migration For Helpers
+
+Context:
+The user asked to install the latest PowerShell, update the project for that version, restart the coordinate UI, and verify it still works.
+
+Decision:
+Installed PowerShell `7.6.1` with `winget` package `Microsoft.PowerShell`. Project helper examples now prefer `pwsh`. Tests that spawn child PowerShell processes now reuse the current executable, so running the suite under `pwsh` keeps child checks on PowerShell 7 instead of falling back to Windows PowerShell 5.1. The minimap UI also reuses the current executable for its marker probe process.
+
+Verification:
+`pwsh -NoProfile -Command '$PSVersionTable'` reported `PSVersion 7.6.1` and `PSEdition Core`. `pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\run-all.ps1` passed. The old Windows PowerShell UI process was stopped, and the UI was restarted with `pwsh -STA`; the running UI process is `pwsh` with window title `Minimap Position`.
+
+Next action:
+Use `pwsh` for new helper runs and UI launches. Keep `powershell` only as a Windows PowerShell 5.1 fallback when a legacy-only behavior is required.

@@ -145,10 +145,8 @@ Launch AutoJs6:
 & 'C:\LDPlayer\LDPlayer9\ldconsole.exe' runapp --index 0 --packagename org.autojs.autojs6
 ```
 
-## Safety And Policy
+## App Install Policy
 
-- Use this project for personal, offline, testing, accessibility, and non-competitive automation.
-- Do not build multiplayer farming, ranking, economy, trading, anti-cheat bypass, or unfair advantage automation.
 - Use Google Play as the default app install/update source in LDPlayer.
 - Pause for user login when Google Play or game login requires credentials.
 - Do not use third-party APK/XAPK sources unless the user explicitly approves the source and trust tradeoff.

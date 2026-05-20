@@ -17,10 +17,14 @@ Use this file as the project entrypoint. Stable details are split by topic:
 - Session summary: `docs/SESSION_SUMMARY_2026-05-16.md`
 - ADB setup helper: `tools/setup-ldplayer-adb.ps1`
 - Bounded key input helper: `tools/send-ldplayer-key.ps1`
+- Minimap player marker helper: `tools/find-minimap-player-marker.ps1`
+- Minimap position UI: `tools/show-minimap-position-ui.ps1`
 - Codex skill install helper: `tools/install-codex-skill.ps1`
 - Full test runner: `tests/run-all.ps1`
 - ADB setup tests: `tests/test-ldplayer-adb-setup.ps1`
 - LDPlayer capture tests: `tests/test-capture-ldplayer.ps1`
+- Minimap marker tests: `tests/test-find-minimap-player-marker.ps1`
+- Minimap position UI tests: `tests/test-show-minimap-position-ui.ps1`
 - Codex skill install tests: `tests/test-install-codex-skill.ps1`
 - Bounded key input tests: `tests/test-send-ldplayer-key.ps1`
 - Skill validation tests: `tests/test-ldplayer-autojs6-skill.ps1`
@@ -144,13 +148,13 @@ C:\LDPlayer\LDPlayer9\adb.exe
 Validate setup:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Run tests for the setup helper:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-adb-setup.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-adb-setup.ps1
 ```
 
 Use explicit serials when running ADB commands:
@@ -179,6 +183,30 @@ Record the emulator resolution for each script when possible:
 Resolution: 1280x720
 ```
 
+## Minimap Player Coordinates
+
+Use `tools/find-minimap-player-marker.ps1` to detect the yellow player marker in the MapleStory Worlds minimap.
+
+Analyze an existing screenshot:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -ImagePath .\screenshots\ldplayer-current-pull.png
+```
+
+Monitor the current LDPlayer screen:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -Watch -IntervalMs 500
+```
+
+Open the small live coordinate UI:
+
+```powershell
+pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\show-minimap-position-ui.ps1
+```
+
+The helper reports minimap-local coordinates, normalized minimap percentages, and full-screen coordinates. Use the minimap-local coordinate for conversation, for example `minimap=(65,49)`.
+
 ## Screenshots
 
 Screenshots are useful for:
@@ -202,7 +230,7 @@ WORKFLOW.md
 
 Use this project for personal, offline, testing, accessibility, or non-competitive automation.
 
-Avoid building automation that gives unfair advantage in multiplayer or server-based games, such as automatic farming, ranking, economy, trading, or anti-cheat bypass behavior.
+Avoid building automation that gives unfair advantage in multiplayer or server-based games, such as automatic farming, reward loops, ranking, economy, trading, or anti-cheat bypass behavior.
 
 ## Future Notes Template
 
