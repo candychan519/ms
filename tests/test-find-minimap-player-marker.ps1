@@ -199,6 +199,14 @@ try {
     $excluded = ($excludedOutput | ConvertFrom-Json)
     Assert-True (-not [bool]$excluded.Found) "Synthetic marker should be excluded outside the local Y filter."
     Assert-Equal "no-candidate" ([string]$excluded.Reason) "Excluded marker output should report no candidate."
+
+    $invalidSerialOutput = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
+      -ImagePath $fixturePath `
+      -Serial 'bad serial' `
+      -Json 2>&1
+
+    Assert-True ($LASTEXITCODE -ne 0) "Invalid ADB serial values should fail before capture."
+    Assert-True (($invalidSerialOutput -join ' ') -match "Serial must be an ADB serial") "Invalid serial failure should explain the accepted formats."
   }
 } finally {
   if (Test-Path -LiteralPath $tempRoot) {

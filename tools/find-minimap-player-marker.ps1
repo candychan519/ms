@@ -441,6 +441,9 @@ function Write-MarkerResult {
 if ($IntervalMs -lt 100) {
   throw "IntervalMs must be at least 100."
 }
+if ($Serial -notmatch '^[^:\s]+:\d+$|^emulator-\d+$') {
+  throw "Serial must be an ADB serial such as 127.0.0.1:5555 or emulator-5554."
+}
 if ($Samples -lt 0) {
   throw "Samples must be 0 or greater. Use 0 with -Watch to run until Ctrl+C."
 }
