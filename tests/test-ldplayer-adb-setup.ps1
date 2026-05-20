@@ -6,6 +6,13 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $scriptPath = Join-Path $repoRoot "tools\setup-ldplayer-adb.ps1"
 $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("ldplayer-adb-tests-" + [guid]::NewGuid().ToString("N"))
+$powerShellExe = (Get-Process -Id $PID).Path
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command pwsh -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source)
+}
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command powershell -ErrorAction Stop | Select-Object -First 1 -ExpandProperty Source)
+}
 $failures = New-Object System.Collections.Generic.List[string]
 
 function Add-Failure {
@@ -80,7 +87,7 @@ try {
   New-Item -ItemType Directory -Path $tempRoot -Force | Out-Null
   $fake = New-FakeAdb -Directory $tempRoot
 
-  $dryRun = & powershell -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
+  $dryRun = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
     -AdbPath $fake.Path `
     -Endpoint "127.0.0.1:5555" `
     -DryRun `
@@ -93,7 +100,7 @@ try {
   Assert-True (@($dryRun)[2].Arguments[1] -eq "127.0.0.1:5555") "Dry-run should target the requested LDPlayer endpoint."
   Assert-True (-not (Test-Path -LiteralPath $fake.LogPath)) "Dry-run should not invoke the ADB executable."
 
-  $mocked = & powershell -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
+  $mocked = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
     -AdbPath $fake.Path `
     -Endpoint "127.0.0.1:5555" `
     -Json |
@@ -109,7 +116,7 @@ try {
   $offlineOut = Join-Path $tempRoot "offline.out"
   $offlineErr = Join-Path $tempRoot "offline.err"
   $offlineProcess = Start-Process `
-    -FilePath "powershell" `
+    -FilePath $powerShellExe `
     -ArgumentList @(
       "-NoProfile",
       "-ExecutionPolicy", "Bypass",
@@ -127,7 +134,7 @@ try {
   $invalidEndpointOut = Join-Path $tempRoot "invalid-endpoint.out"
   $invalidEndpointErr = Join-Path $tempRoot "invalid-endpoint.err"
   $invalidEndpointProcess = Start-Process `
-    -FilePath "powershell" `
+    -FilePath $powerShellExe `
     -ArgumentList @(
       "-NoProfile",
       "-ExecutionPolicy", "Bypass",

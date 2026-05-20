@@ -81,10 +81,10 @@ Capture through ADB:
 & 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 pull /sdcard/Pictures/shot.png .\downloads\shot.png
 ```
 
-Dry-run a bounded `A` key test:
+Dry-run an `A` key test:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
 ```
 
 ## Known Caveats
@@ -94,3 +94,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps
 - Resolution changes require LDPlayer reboot before Android `wm size` changes.
 - Some graphics surfaces may appear black/blank with Windows `PrintWindow`; use ADB screenshots or foreground capture.
 - Google Play is the default install/update source for Android apps. Pause for user login when required.
+- After an LDPlayer reboot, restart `/data/local/tmp/frida-server` through `su -c` before spawning protected apps with Frida.
+- Use `tools\verify-frida-log.ps1` for Frida log smoke checks, and load `tools\frida-spoof-process-hardware.js` after the main bypass script when the target app process needs the SM-N935F-like hardware profile.

@@ -11,6 +11,13 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 if (-not $SkillRoot) {
   $SkillRoot = Join-Path $repoRoot "codex-skills\ldplayer-autojs6"
 }
+$powerShellExe = (Get-Process -Id $PID).Path
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command pwsh -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source)
+}
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command powershell -ErrorAction Stop | Select-Object -First 1 -ExpandProperty Source)
+}
 $failures = New-Object System.Collections.Generic.List[string]
 
 function Add-Failure {
@@ -39,6 +46,9 @@ Assert-File (Join-Path $SkillRoot "agents\openai.yaml")
 Assert-File (Join-Path $SkillRoot "references\project-baseline.md")
 Assert-File (Join-Path $SkillRoot "scripts\setup-ldplayer-adb.ps1")
 Assert-File (Join-Path $SkillRoot "scripts\capture-ldplayer.ps1")
+Assert-File (Join-Path $SkillRoot "scripts\find-minimap-player-marker.ps1")
+Assert-File (Join-Path $SkillRoot "scripts\start-maple-console.ps1")
+Assert-File (Join-Path $SkillRoot "scripts\show-minimap-position-ui.ps1")
 Assert-File (Join-Path $SkillRoot "scripts\send-ldplayer-key.ps1")
 Assert-File (Join-Path $SkillRoot "scripts\install-codex-skill.ps1")
 
@@ -49,6 +59,10 @@ Assert-True ($skillText -match "1280x720") "SKILL.md should document the current
 Assert-True ($skillText -match "framesPerSecond") "SKILL.md should document FPS verification."
 Assert-True ($skillText -match 'Global FPS cap:\s*`60`') "SKILL.md should document the current 60 FPS baseline."
 Assert-True ($skillText -match "send-ldplayer-key\.ps1") "SKILL.md should document the bounded key input helper."
+Assert-True ($skillText -match "find-minimap-player-marker\.ps1") "SKILL.md should document the minimap marker helper."
+Assert-True ($skillText -match "start-maple-console\.ps1") "SKILL.md should document the canonical Maple console entrypoint."
+Assert-True ($skillText -match "show-minimap-position-ui\.ps1") "SKILL.md should document the legacy minimap position UI wrapper."
+Assert-True ($skillText -match "MaxDurationSeconds") "SKILL.md should document the bounded duration cap for repeated key input."
 Assert-True ($skillText -match "RECORDING_RULES\.md") "SKILL.md should include the recording rules in its standard document list."
 Assert-True ($skillText -notmatch "\[TODO\]|TODO:") "SKILL.md should not contain template TODO markers."
 
@@ -62,11 +76,20 @@ Assert-True ($LASTEXITCODE -eq 0) "PyYAML should be installed for skill validati
 
 Assert-File $QuickValidate
 
-$validateOutput = & python $QuickValidate $SkillRoot 2>&1
-Assert-True ($LASTEXITCODE -eq 0) "quick_validate.py should pass. Output: $($validateOutput -join ' ')"
-Assert-True (($validateOutput -join "`n") -match "Skill is valid") "quick_validate.py should report a valid skill."
+$previousPythonUtf8 = $env:PYTHONUTF8
+$previousPythonIoEncoding = $env:PYTHONIOENCODING
+try {
+  $env:PYTHONUTF8 = "1"
+  $env:PYTHONIOENCODING = "utf-8"
+  $validateOutput = & python $QuickValidate $SkillRoot 2>&1
+  Assert-True ($LASTEXITCODE -eq 0) "quick_validate.py should pass. Output: $($validateOutput -join ' ')"
+  Assert-True (($validateOutput -join "`n") -match "Skill is valid") "quick_validate.py should report a valid skill."
+} finally {
+  $env:PYTHONUTF8 = $previousPythonUtf8
+  $env:PYTHONIOENCODING = $previousPythonIoEncoding
+}
 
-$dryRunOutput = & powershell -NoProfile -ExecutionPolicy Bypass `
+$dryRunOutput = & $powerShellExe -NoProfile -ExecutionPolicy Bypass `
   -File (Join-Path $SkillRoot "scripts\setup-ldplayer-adb.ps1") `
   -AdbPath $AdbPath `
   -Endpoint "127.0.0.1:5555" `
@@ -74,7 +97,7 @@ $dryRunOutput = & powershell -NoProfile -ExecutionPolicy Bypass `
 Assert-True ($LASTEXITCODE -eq 0) "Bundled setup-ldplayer-adb.ps1 dry-run should pass. Output: $($dryRunOutput -join ' ')"
 Assert-True (($dryRunOutput -join "`n") -match "DRY-RUN connect") "Bundled setup script should include the connect step in dry-run output."
 
-$keyDryRunOutput = & powershell -NoProfile -ExecutionPolicy Bypass `
+$keyDryRunOutput = & $powerShellExe -NoProfile -ExecutionPolicy Bypass `
   -File (Join-Path $SkillRoot "scripts\send-ldplayer-key.ps1") `
   -AdbPath $AdbPath `
   -Serial "127.0.0.1:5555" `

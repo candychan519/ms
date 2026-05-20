@@ -96,7 +96,7 @@ If the emulator resolution changes, scripts that use fixed coordinates may need 
 
 ## Bounded Key Input Testing
 
-Use `tools/send-ldplayer-key.ps1` for short input tests only. Do not use it for multiplayer farming, reward loops, ranking, economy, trading, or anti-cheat bypass.
+Use `tools/send-ldplayer-key.ps1` for short input tests.
 
 Dry-run an `A` key repeat:
 

@@ -8,6 +8,11 @@ Use this file as the project entrypoint. Stable details are split by topic:
 
 - Environment info: `docs/ENVIRONMENT.md`
 - Tools and installation: `docs/TOOLS_AND_INSTALLATION.md`
+- Frida smoke-test tutorial: `docs/TUTORIAL_FRIDA_HOOK_SMOKE_TEST.md`
+- Frida verification how-to: `docs/HOW_TO_VERIFY_FRIDA_HOOKS.md`
+- Maple console how-to: `docs/HOW_TO_USE_MAPLE_CONSOLE.md`
+- Frida verification reference: `docs/FRIDA_HOOK_VERIFICATION_REFERENCE.md`
+- Frida verification rationale: `docs/WHY_FRIDA_VERIFICATION_IS_APP_PROCESS_SCOPED.md`
 - Usage and sharing: `docs/USAGE_AND_SHARING.md`
 - Work and development method: `docs/WORK_AND_DEVELOPMENT_METHOD.md`
 - Recording rules: `docs/RECORDING_RULES.md`
@@ -17,10 +22,15 @@ Use this file as the project entrypoint. Stable details are split by topic:
 - Session summary: `docs/SESSION_SUMMARY_2026-05-16.md`
 - ADB setup helper: `tools/setup-ldplayer-adb.ps1`
 - Bounded key input helper: `tools/send-ldplayer-key.ps1`
+- Minimap player marker helper: `tools/find-minimap-player-marker.ps1`
+- Maple console / minimap repeat UI: `tools/start-maple-console.ps1`
+- Legacy minimap-position wrapper: `tools/show-minimap-position-ui.ps1`
 - Codex skill install helper: `tools/install-codex-skill.ps1`
 - Full test runner: `tests/run-all.ps1`
 - ADB setup tests: `tests/test-ldplayer-adb-setup.ps1`
 - LDPlayer capture tests: `tests/test-capture-ldplayer.ps1`
+- Minimap marker tests: `tests/test-find-minimap-player-marker.ps1`
+- Maple console tests: `tests/test-start-maple-console.ps1`
 - Codex skill install tests: `tests/test-install-codex-skill.ps1`
 - Bounded key input tests: `tests/test-send-ldplayer-key.ps1`
 - Skill validation tests: `tests/test-ldplayer-autojs6-skill.ps1`
@@ -144,13 +154,13 @@ C:\LDPlayer\LDPlayer9\adb.exe
 Validate setup:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Run tests for the setup helper:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-adb-setup.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-adb-setup.ps1
 ```
 
 Use explicit serials when running ADB commands:
@@ -179,6 +189,56 @@ Record the emulator resolution for each script when possible:
 Resolution: 1280x720
 ```
 
+## Minimap Player Coordinates
+
+Use `tools/find-minimap-player-marker.ps1` to detect the yellow player marker in the MapleStory Worlds minimap.
+
+Analyze an existing screenshot:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -ImagePath .\screenshots\ldplayer-current-pull.png
+```
+
+Monitor the current LDPlayer screen:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -Watch -IntervalMs 500
+```
+
+Open the Maple console:
+
+```powershell
+pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\start-maple-console.ps1
+```
+
+Older notes may still use the legacy wrapper:
+
+```powershell
+pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\show-minimap-position-ui.ps1
+```
+
+`tools/start-maple-console.ps1` is the canonical Maple console, not a throwaway coordinate viewer. `tools/show-minimap-position-ui.ps1` exists only as a legacy wrapper for older commands. The main console must keep these user-facing controls unless the user explicitly asks to remove them:
+
+- Three map profiles: `빅토리아로드 헤네시스동쪽풀숲`, `선셋로드 사헬지대2`, and `선셋로드 꿈꾸는 사막`.
+- Current character coordinate display from the minimap marker watcher.
+- `A 누르기` / `A 반복 중지`.
+- `A→왼쪽+F v2` / `v2 반복 중지`.
+- `D 사용`, `D 간격`, and the interval text box.
+
+The helper reports minimap-local coordinates, normalized minimap percentages, and full-screen coordinates. Use the minimap-local coordinate for conversation, for example `minimap=(65,49)`.
+
+Keep the repo copy and the bundled skill copy synchronized:
+
+```powershell
+Copy-Item -LiteralPath .\tools\start-maple-console.ps1 -Destination .\codex-skills\ldplayer-autojs6\scripts\start-maple-console.ps1 -Force
+```
+
+Before saying the console is ready, run the minimap UI test and inspect a live screenshot. UI Automation can prove that a control exists, but it cannot prove that Korean text is visually unclipped.
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\test-start-maple-console.ps1
+```
+
 ## Screenshots
 
 Screenshots are useful for:
@@ -197,12 +257,6 @@ screenshots/
 notes/
 WORKFLOW.md
 ```
-
-## Safety Boundary
-
-Use this project for personal, offline, testing, accessibility, or non-competitive automation.
-
-Avoid building automation that gives unfair advantage in multiplayer or server-based games, such as automatic farming, ranking, economy, trading, or anti-cheat bypass behavior.
 
 ## Future Notes Template
 

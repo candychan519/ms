@@ -56,7 +56,7 @@ Use this loop for PowerShell helpers, ADB setup scripts, capture helpers, input 
 Run all tests:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-all.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\run-all.ps1
 ```
 
 ## Multi-Agent Work Method
@@ -79,11 +79,13 @@ Preferred methods:
 
 - Use ADB `screencap` when ADB is healthy.
 - Use `tools/capture-ldplayer.ps1` when the user is working in another window and non-obstructing capture is needed.
+- Use `tools/find-minimap-player-marker.ps1 -Watch` when the user wants live minimap player coordinates for communication or visual debugging.
+- Use `tools/start-maple-console.ps1` for the Maple console. This is the canonical minimap repeat UI, not just a coordinate viewer.
 
 Command:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
 ```
 
 The wait should match the action:
@@ -93,6 +95,24 @@ The wait should match the action:
 - App launch or first screen load: wait `3-7` seconds, then re-check.
 - Store install, update, or network-heavy loading: check every `5-10` seconds.
 - Unknown stuck state: take one screenshot, then decide whether to wait longer or change approach.
+
+## Maple Console Preservation
+
+`tools/start-maple-console.ps1` is the main Maple console. `tools/show-minimap-position-ui.ps1` is only a legacy wrapper for older commands. Do not replace the main console with a coordinate-only UI while debugging minimap detection. If a temporary coordinate-only view is needed, create a separate helper instead.
+
+The console is expected to keep:
+
+- Three map profiles: `빅토리아로드 헤네시스동쪽풀숲`, `선셋로드 사헬지대2`, and `선셋로드 꿈꾸는 사막`.
+- The minimap coordinate display and watcher.
+- `A 누르기`, `A→왼쪽+F v2`, and the periodic `D 사용` / `D 간격` controls.
+
+Before reporting that the console is fixed or open, verify both behavior and layout:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\test-start-maple-console.ps1
+```
+
+Also capture a live screenshot of the `메이플 콘솔` window and inspect it visually. Control names and bounding boxes are not enough; they missed clipped Korean text before.
 
 ## New Script Template
 
@@ -121,23 +141,6 @@ Known issues:
 - Use `toast()` or logs for visible status during early AutoJs6 tests.
 - Keep fixed coordinates documented with the screen resolution.
 
-## Safety Boundary
-
-Allowed scope:
-
-- Personal automation
-- Offline automation
-- Testing
-- Accessibility support
-- Non-competitive app automation
-
-Avoid:
-
-- Multiplayer farming
-- Ranking, economy, trading, or reward automation
-- Anti-cheat bypass
-- Automation that gives unfair advantage over other users
-
 ## Bounded Input Helpers
 
 Repeated key or tap helpers must be bounded by count or short duration.
@@ -147,5 +150,4 @@ Rules:
 - Default to dry-run before live input.
 - Keep intervals at or above `50ms`.
 - Reject long unbounded loops.
-- Do not run repeated inputs for multiplayer farming, rewards, ranking, economy, trading, or anti-cheat bypass.
 - Prefer one short test such as `Count 1-5` before increasing duration.

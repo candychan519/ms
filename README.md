@@ -21,6 +21,11 @@ This repository stores the local workflow, scripts, tests, and Codex skill sourc
 - `docs/SESSION_SUMMARY_2026-05-16.md`: completed setup summary
 - `docs/ENVIRONMENT.md`: current environment
 - `docs/TOOLS_AND_INSTALLATION.md`: tools and install notes
+- `docs/TUTORIAL_FRIDA_HOOK_SMOKE_TEST.md`: tutorial for the Frida benchmark smoke test
+- `docs/HOW_TO_VERIFY_FRIDA_HOOKS.md`: how-to guide for benchmark and target-app Frida verification
+- `docs/HOW_TO_USE_MAPLE_CONSOLE.md`: how-to guide for the Maple console and repeat controls
+- `docs/FRIDA_HOOK_VERIFICATION_REFERENCE.md`: reference for the Frida log verifier and hardware overlay
+- `docs/WHY_FRIDA_VERIFICATION_IS_APP_PROCESS_SCOPED.md`: explanation of the app-process-scoped verification model
 - `docs/USAGE_AND_SHARING.md`: usage and shared folder workflow
 - `docs/WORK_AND_DEVELOPMENT_METHOD.md`: TDD, multi-agent, and safety rules
 - `logs/LEARNINGS.md`: append-only findings and decisions
@@ -30,13 +35,22 @@ This repository stores the local workflow, scripts, tests, and Codex skill sourc
 - `tools/setup-ldplayer-adb.ps1`
 - `tools/capture-ldplayer.ps1`
 - `tools/send-ldplayer-key.ps1`
+- `tools/find-minimap-player-marker.ps1`
+- `tools/start-maple-console.ps1`
+- `tools/show-minimap-position-ui.ps1`
 - `tools/install-codex-skill.ps1`
+- `tools/verify-frida-log.ps1`
+- `tools/frida-spoof-process-hardware.js`
 - `tests/run-all.ps1`
 - `tests/test-ldplayer-adb-setup.ps1`
 - `tests/test-capture-ldplayer.ps1`
+- `tests/test-find-minimap-player-marker.ps1`
+- `tests/test-start-maple-console.ps1`
 - `tests/test-install-codex-skill.ps1`
 - `tests/test-ldplayer-autojs6-skill.ps1`
 - `tests/test-send-ldplayer-key.ps1`
+- `tests/test-verify-frida-log.ps1`
+- `tests/test-frida-spoof-process-hardware.ps1`
 
 ## Skill Source
 
@@ -51,7 +65,3 @@ The active local copy is installed at:
 ```text
 %USERPROFILE%\.codex\skills\ldplayer-autojs6
 ```
-
-## Safety Boundary
-
-Use this workspace for personal, offline, testing, accessibility, and non-competitive automation. Do not build multiplayer farming, reward loops, ranking, economy, trading, anti-cheat bypass, or unfair advantage automation.

@@ -7,6 +7,13 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $scriptPath = Join-Path $repoRoot "tools\install-codex-skill.ps1"
 $sourceSkill = Join-Path $repoRoot "codex-skills\ldplayer-autojs6"
 $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("codex-skill-install-test-" + [guid]::NewGuid().ToString("N"))
+$powerShellExe = (Get-Process -Id $PID).Path
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command pwsh -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source)
+}
+if (-not $powerShellExe) {
+  $powerShellExe = (Get-Command powershell -ErrorAction Stop | Select-Object -First 1 -ExpandProperty Source)
+}
 $failures = New-Object System.Collections.Generic.List[string]
 
 function Add-Failure {
@@ -29,14 +36,14 @@ try {
   Assert-True (Test-Path -LiteralPath $scriptPath -PathType Leaf) "install-codex-skill.ps1 should exist."
   Assert-True (Test-Path -LiteralPath (Join-Path $sourceSkill "SKILL.md") -PathType Leaf) "Repo skill source should contain SKILL.md."
 
-  $dryRun = & powershell -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
+  $dryRun = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
     -SourceSkillPath $sourceSkill `
     -DestinationRoot $tempRoot `
     -DryRun
   Assert-True (($dryRun -join "`n") -match "DRY-RUN") "Dry-run should report planned actions."
   Assert-True (-not (Test-Path -LiteralPath (Join-Path $tempRoot "ldplayer-autojs6"))) "Dry-run should not copy the skill."
 
-  $run = & powershell -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
+  $run = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
     -SourceSkillPath $sourceSkill `
     -DestinationRoot $tempRoot
   $installedSkill = Join-Path $tempRoot "ldplayer-autojs6"
@@ -45,7 +52,7 @@ try {
   Assert-True (Test-Path -LiteralPath (Join-Path $installedSkill "scripts\setup-ldplayer-adb.ps1") -PathType Leaf) "Installed skill should contain setup script."
   Assert-True (Test-Path -LiteralPath (Join-Path $installedSkill "references\project-baseline.md") -PathType Leaf) "Installed skill should contain baseline reference."
 
-  $runAgain = & powershell -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
+  $runAgain = & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath `
     -SourceSkillPath $sourceSkill `
     -DestinationRoot $tempRoot
   Assert-True (($runAgain -join "`n") -match "Installed skill") "Second install should also report the installed path."

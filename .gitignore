@@ -1,6 +1,8 @@
 # Local/generated artifacts
 downloads/
 screenshots/
+graphify-out/
+.codex/
 *.log
 
 # Android packages and captures

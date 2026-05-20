@@ -10,6 +10,13 @@
 - GitHub Releases: AutoJs6 APK 다운로드 출처
 - Windows Explorer shared folder: LDPlayer와 스크립트 파일 공유
 
+## Installed PowerShell
+
+- Version: `7.6.1`
+- Command: `pwsh`
+- Install source: `winget` package `Microsoft.PowerShell`
+- Use `pwsh` for project helper scripts, tests, and UI launch. Windows PowerShell 5.1 remains available as `powershell`.
+
 ## Installed AutoJs6
 
 - Version: `v6.7.0`
@@ -62,6 +69,55 @@ AutoJs6 was verified by:
 - Enabling required permissions.
 - Importing and running `autojs6-test`.
 
+Frida hook verification uses `tools/verify-frida-log.ps1` against logs produced by benchmark apps. The helper checks required hook markers, forbidden crash/ANR markers, and allowed warnings.
+
+Detailed Frida docs:
+
+- Tutorial: `docs\TUTORIAL_FRIDA_HOOK_SMOKE_TEST.md`
+- How-to: `docs\HOW_TO_VERIFY_FRIDA_HOOKS.md`
+- Reference: `docs\FRIDA_HOOK_VERIFICATION_REFERENCE.md`
+- Explanation: `docs\WHY_FRIDA_VERIFICATION_IS_APP_PROCESS_SCOPED.md`
+
+Benchmark APKs used:
+
+- HTTP Toolkit Android SSL Pinning Demo `v1.6.1`: `downloads\benchmarks\pinning-demo-v1.6.1.apk`
+- OWASP UnCrackable L1: `downloads\benchmarks\UnCrackable-Level1.apk`
+
+Example log verification:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\httptoolkit-pinning-fdciabdul.log' -RequirePattern @('BypassNativeNow','Unpinning setup completed','Bypassing OkHTTPv3') -ForbidPattern @('FATAL EXCEPTION','Application Not Responding','ANR')"
+```
+
+### Frida Hardware Profile Overlay
+
+Use `tools\frida-spoof-process-hardware.js` after the main bypass script when the app process should see a coherent SM-N935F-like hardware profile:
+
+- CPU ABI: `arm64-v8a`
+- CPU cores: `8`
+- GPU: `ARM / Mali-T880 / OpenGL ES 3.2`
+- Memory: `4294967296` bytes total, `2147483648` bytes available
+
+Example launch:
+
+```powershell
+& "$env:USERPROFILE\AppData\Roaming\Python\Python313\Scripts\frida.exe" -U -f tech.httptoolkit.pinning_demo `
+  -l .\downloads\frida\fdciabdul-frida-multiple-bypass-ldplayer.js `
+  -l .\tools\frida-spoof-process-hardware.js `
+  -l .\downloads\frida\show-spoof-values.js `
+  -o .\downloads\frida\httptoolkit-hardware-spoof.log
+```
+
+For MapleStory Worlds, replace `tech.httptoolkit.pinning_demo` with `com.nexon.mod`.
+
+For normal headless target-app runs, omit `downloads\frida\show-spoof-values.js`; that script is only for temporarily displaying the spoofed values on screen.
+
+After an LDPlayer reboot, restart Frida server as root before spawning protected apps. If Frida reports `need Gadget to attach on jailed Android`, run:
+
+```powershell
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell su -c '/data/local/tmp/frida-server >/dev/null 2>&1 &'
+```
+
 ## Required Permissions
 
 - Overlay permission: needed for AutoJs6 floating controls and UI behavior.
@@ -82,7 +138,7 @@ Current setup:
 Setup and validation command:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Manual checks:
@@ -148,5 +204,5 @@ python -m pip install PyYAML
 Project test for the skill:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-autojs6-skill.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-autojs6-skill.ps1
 ```

@@ -25,12 +25,6 @@ Current known defaults for this project. Treat `<repo>` as the cloned repository
 - AutoJs6 package: `org.autojs.autojs6`
 - MapleStory Worlds package: `com.nexon.mod`
 
-## Safety Boundary
-
-Keep automation scoped to personal, offline, testing, accessibility, and non-competitive workflows.
-
-Do not build or assist with multiplayer farming, ranking, economy, trading, anti-cheat bypass, or automation that gives unfair advantage over other users.
-
 ## Standard Workflow
 
 1. Read the project docs before changing behavior:
@@ -38,6 +32,7 @@ Do not build or assist with multiplayer farming, ranking, economy, trading, anti
    - `<repo>\MIGRATION.md`
    - `<repo>\docs\ENVIRONMENT.md`
    - `<repo>\docs\TOOLS_AND_INSTALLATION.md`
+   - `<repo>\docs\HOW_TO_USE_MAPLE_CONSOLE.md`
    - `<repo>\docs\USAGE_AND_SHARING.md`
    - `<repo>\docs\WORK_AND_DEVELOPMENT_METHOD.md`
    - `<repo>\docs\RECORDING_RULES.md`
@@ -57,13 +52,13 @@ Do not build or assist with multiplayer farming, ranking, economy, trading, anti
 Validate the current LDPlayer ADB endpoint:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\setup-ldplayer-adb.ps1 -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Or use the bundled skill copy:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\ldplayer-autojs6\scripts\setup-ldplayer-adb.ps1" -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
+pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\ldplayer-autojs6\scripts\setup-ldplayer-adb.ps1" -AdbPath C:\LDPlayer\LDPlayer9\adb.exe -Endpoint 127.0.0.1:5555
 ```
 
 Manual checks:
@@ -125,25 +120,62 @@ Prefer ADB screenshots when ADB is healthy:
 Use non-obstructing Windows capture when the user is working in another window:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\capture-ldplayer.ps1
 ```
 
 If `PrintWindow` returns black/blank for graphics surfaces, use ADB `screencap` or briefly foreground LDPlayer and capture the screen region.
 
+## Minimap Player Marker
+
+Use `find-minimap-player-marker.ps1` to detect the yellow MapleStory Worlds player marker in the top-left minimap. It reports minimap-local coordinates, normalized minimap percentages, and full-screen coordinates.
+
+Analyze a saved screenshot:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -ImagePath .\screenshots\ldplayer-current-pull.png
+```
+
+Watch live LDPlayer coordinates with ADB `screencap`:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\find-minimap-player-marker.ps1 -Watch -IntervalMs 500
+```
+
+Open the Maple console:
+
+```powershell
+pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\start-maple-console.ps1
+```
+
+`start-maple-console.ps1` is the canonical Maple console. It should keep the current coordinate display plus the repeat controls: `A 누르기`, `A→왼쪽+F v2`, `D 사용`, `D 간격`, and the three map profiles `빅토리아로드 헤네시스동쪽풀숲`, `선셋로드 사헬지대2`, and `선셋로드 꿈꾸는 사막`. Do not replace it with a coordinate-only UI; create a separate helper if a temporary coordinate view is needed. `show-minimap-position-ui.ps1` is only a legacy wrapper for older commands.
+
+Use minimap-local coordinates for conversation, for example `minimap=(65,49)`.
+
+When changing this console, keep these copies synchronized:
+
+- `<repo>\tools\start-maple-console.ps1`
+- `<repo>\codex-skills\ldplayer-autojs6\scripts\start-maple-console.ps1`
+- `%USERPROFILE%\.codex\skills\ldplayer-autojs6\scripts\start-maple-console.ps1` when operating the installed skill locally
+- Keep `show-minimap-position-ui.ps1` as a wrapper that forwards to `start-maple-console.ps1`.
+
+Run `tests\test-start-maple-console.ps1` and inspect a real `메이플 콘솔` screenshot before reporting that the UI is fixed. UI Automation name checks do not prove Korean text is unclipped.
+
+For task-oriented operating steps, read `<repo>\docs\HOW_TO_USE_MAPLE_CONSOLE.md`.
+
 ## Bounded Key Input
 
-Use `send-ldplayer-key.ps1` only for short testing/accessibility/private workflows. Do not use it for multiplayer farming, reward loops, ranking, economy, or anti-cheat bypass.
+Use `send-ldplayer-key.ps1` for short input checks.
 
 Dry-run a repeated `A` key sequence:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250 -DryRun
 ```
 
-Send a short bounded sequence:
+Send a short bounded key sequence:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key A -Count 5 -IntervalMs 250
 ```
 
 The tool rejects unbounded runs. `DurationSeconds` is capped by `MaxDurationSeconds` and defaults to a maximum of `30` seconds.
@@ -155,6 +187,38 @@ The tool rejects unbounded runs. `DurationSeconds` is capped by `MaxDurationSeco
 3. Import from `/sdcard/Pictures` in AutoJs6.
 4. Run small tests before long loops.
 5. Always include a stop condition for repeated actions.
+
+## Frida Verification
+
+Attach broad Frida bypass scripts to the protected target app process, not to AutoJs6. Keep AutoJs6 for UI automation and use Frida against the app under test, such as `com.nexon.mod`.
+
+Use benchmark apps for repeatable smoke tests when validating hook behavior:
+
+- HTTP Toolkit Android SSL Pinning Demo for SSL/pinning hook checks.
+- OWASP UnCrackable L1 for root-detection hook checks.
+
+Verify captured Frida logs with:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-frida-log.ps1 -LogPath .\downloads\frida\<log>.log
+```
+
+When the app process should see a coherent SM-N935F-like profile, load the hardware overlay after the main bypass script:
+
+```powershell
+& "$env:USERPROFILE\AppData\Roaming\Python\Python313\Scripts\frida.exe" -U -f com.nexon.mod `
+  -l .\downloads\frida\fdciabdul-frida-multiple-bypass-ldplayer.js `
+  -l .\tools\frida-spoof-process-hardware.js `
+  -o .\downloads\frida\nexon-hardware-spoof-headless.log
+```
+
+For temporary on-screen spoof-value inspection, add `downloads\frida\show-spoof-values.js`. Omit it for normal headless target-app runs.
+
+After an LDPlayer reboot, restart Frida server as root before spawning protected apps:
+
+```powershell
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell su -c '/data/local/tmp/frida-server >/dev/null 2>&1 &'
+```
 
 ## App Install Policy
 

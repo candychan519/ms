@@ -195,6 +195,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-adb-se
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-install-codex-skill.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-send-ldplayer-key.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-capture-ldplayer.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-find-minimap-player-marker.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-start-maple-console.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-verify-frida-log.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-frida-spoof-process-hardware.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-autojs6-skill.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\test-ldplayer-autojs6-skill.ps1 -SkillRoot "$env:USERPROFILE\.codex\skills\ldplayer-autojs6"
 ```
@@ -252,7 +256,3 @@ These are intentionally not restored by Git:
 - local Codex runtime state
 
 Recreate these manually on the target PC.
-
-## Safety Boundary
-
-Use this workspace for personal, offline, testing, accessibility, and non-competitive automation. Do not build or run multiplayer farming, reward loops, ranking, economy, trading, anti-cheat bypass, or unfair advantage automation.
