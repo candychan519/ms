@@ -17,6 +17,7 @@ Use this file as the project entrypoint. Stable details are split by topic:
 - Work and development method: `docs/WORK_AND_DEVELOPMENT_METHOD.md`
 - Recording rules: `docs/RECORDING_RULES.md`
 - Learning log: `logs/LEARNINGS.md`
+- Contribution guide: `CONTRIBUTING.md`
 - Script source notes: `scripts/README.md`
 - Migration guide: `MIGRATION.md`
 - Session summary: `docs/SESSION_SUMMARY_2026-05-16.md`

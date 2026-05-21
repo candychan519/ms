@@ -64,6 +64,7 @@ For benchmark setup, visible spoof-value checks, and the explanation of app-proc
 ## Main Documents
 
 - `WORKFLOW.md`: entrypoint and documentation map
+- `CONTRIBUTING.md`: contribution workflow and public repository safety checklist
 - `MIGRATION.md`: restore this workspace on another Windows PC
 - `docs/SESSION_SUMMARY_2026-05-16.md`: completed setup summary
 - `docs/ENVIRONMENT.md`: current environment
