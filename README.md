@@ -56,7 +56,7 @@ Normal Maple runs should omit `downloads\frida\show-spoof-values.js` so Frida va
 Verify the Maple run log:
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\nexon-hardware-spoof-headless.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 8','ActivityManager.MemoryInfo spoof enabled','Mali-T880','Bypassing OkHTTPv3.*m-api.nexon.com') -ForbidPattern @('FATAL EXCEPTION','ANR','Application Not Responding','spoof-values','Frida spoof values') -AllowWarningPattern @('TypeError: not a function') -Json"
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\nexon-hardware-spoof-headless.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 10','ActivityManager.MemoryInfo spoof enabled','Xclipse 940','Bypassing OkHTTPv3.*m-api.nexon.com') -ForbidPattern @('FATAL EXCEPTION','ANR','Application Not Responding','spoof-values','Frida spoof values','Hooked emulator values') -AllowWarningPattern @('TypeError: not a function') -Json"
 ```
 
 For benchmark setup, visible spoof-value checks, and the explanation of app-process-scoped verification, read `docs/HOW_TO_VERIFY_FRIDA_HOOKS.md`.

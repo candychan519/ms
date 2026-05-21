@@ -63,14 +63,14 @@ Run:
   -o .\downloads\frida\httptoolkit-hardware-spoof.log
 ```
 
-The app opens inside LDPlayer. The temporary value display should show the app-process-visible profile, including `SM-N935F`, `arm64-v8a`, `8` cores, `Mali-T880`, and `4294967296` total memory.
+The app opens inside LDPlayer. The temporary value display should show the app-process-visible profile, including `SM-S921N`, `arm64-v8a`, `10` cores, `Xclipse 940`, and `8589934592` total memory.
 
 ## Step 5: Verify the Captured Log
 
 Leave the Frida process running long enough for the hooks to initialize. Then run this in another PowerShell window:
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\httptoolkit-hardware-spoof.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 8','ActivityManager.MemoryInfo spoof enabled','Mali-T880') -ForbidPattern @('FATAL EXCEPTION','Application Not Responding','ANR')"
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\httptoolkit-hardware-spoof.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 10','ActivityManager.MemoryInfo spoof enabled','Xclipse 940') -ForbidPattern @('FATAL EXCEPTION','Application Not Responding','ANR')"
 ```
 
 You should see:
@@ -97,7 +97,7 @@ The app should open without a Frida value dialog on screen.
 Run:
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\nexon-hardware-spoof-headless.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 8','ActivityManager.MemoryInfo spoof enabled','Mali-T880','Bypassing OkHTTPv3.*m-api.nexon.com') -ForbidPattern @('FATAL EXCEPTION','ANR','Application Not Responding','spoof-values','Frida spoof values') -AllowWarningPattern @('TypeError: not a function')"
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\nexon-hardware-spoof-headless.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 10','ActivityManager.MemoryInfo spoof enabled','Xclipse 940','Bypassing OkHTTPv3.*m-api.nexon.com') -ForbidPattern @('FATAL EXCEPTION','ANR','Application Not Responding','spoof-values','Frida spoof values','Hooked emulator values') -AllowWarningPattern @('TypeError: not a function')"
 ```
 
 You should see a pass. If the known line 724 `TypeError: not a function` appears, the verifier reports it as an allowed warning.

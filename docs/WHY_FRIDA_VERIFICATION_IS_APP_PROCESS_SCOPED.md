@@ -53,16 +53,16 @@ After the benchmark passes, the same script stack can be run against `com.nexon.
 
 ## Why the normal target run is headless
 
-`downloads\frida\show-spoof-values.js` is intentionally temporary. It is useful when you want to see `SM-N935F`, `Mali-T880`, CPU cores, and memory on screen. It should be omitted from normal target-app runs because it creates visible Frida UI.
+`downloads\frida\show-spoof-values.js` is intentionally temporary. It is useful when you want to see `SM-S921N`, `Xclipse 940`, CPU cores, and memory on screen. It should be omitted from normal target-app runs because it creates visible Frida UI.
 
 Headless verification uses logs instead:
 
 ```text
 Required markers:
   Process hardware profile spoof enabled
-  Runtime.availableProcessors spoof enabled: 8
+  Runtime.availableProcessors spoof enabled: 10
   ActivityManager.MemoryInfo spoof enabled
-  Mali-T880
+  Xclipse 940
   Bypassing OkHTTPv3.*m-api.nexon.com
 
 Forbidden markers:

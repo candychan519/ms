@@ -42,7 +42,7 @@ JSON output contains:
 
 ### `tools\frida-spoof-process-hardware.js`
 
-Loads after the main LDPlayer bypass script when the target app process should see a coherent SM-N935F-like hardware profile.
+Loads after the main LDPlayer bypass script when the target app process should see a coherent SM-S921N-like hardware profile.
 
 ```powershell
 & "$env:USERPROFILE\AppData\Roaming\Python\Python313\Scripts\frida.exe" -U -f com.nexon.mod `
@@ -57,21 +57,24 @@ Load order matters. Put `tools\frida-spoof-process-hardware.js` after the main b
 
 | Area | Value |
 |---|---|
-| Model | `SM-N935F` |
+| Model | `SM-S921N` |
 | Manufacturer / brand | `samsung` |
-| Device | `gracerlte` |
-| Product | `gracerltexx` |
-| Hardware | `samsungexynos8890` |
+| Device | `e1s` |
+| Product | `e1sksx` |
+| Hardware | `s5e9945` |
+| SOC | `Samsung Exynos 2400` |
 | CPU ABI | `arm64-v8a` |
 | Supported ABIs | `arm64-v8a`, `armeabi-v7a`, `armeabi` |
-| CPU cores | `8` |
+| CPU cores | `10` |
 | CPU family | ARM64 through `android_getCpuFamily` |
-| GPU vendor | `ARM` |
-| GPU renderer | `Mali-T880` |
+| GPU vendor | `Samsung` |
+| GPU renderer | `Xclipse 940` |
 | GPU version | `OpenGL ES 3.2` |
-| Total memory | `4294967296` bytes |
-| Available memory | `2147483648` bytes |
-| Memory threshold | `268435456` bytes |
+| Display | `1080x2340`, density DPI `420` |
+| Locale / carrier | `ko-KR`, `Asia/Seoul`, `KT` |
+| Total memory | `8589934592` bytes |
+| Available memory | `5368709120` bytes |
+| Memory threshold | `536870912` bytes |
 | Low memory | `false` |
 
 ## Hook Surface
@@ -83,9 +86,12 @@ Java hooks:
 | Surface | Hooked values |
 |---|---|
 | `android.os.Build` | Build identity fields, CPU ABI fields, supported ABI arrays |
-| `java.lang.Runtime.availableProcessors()` | Returns `8` |
+| `java.lang.Runtime.availableProcessors()` | Returns `10` |
 | `android.app.ActivityManager.getMemoryInfo()` | Patches total, available, threshold, and low-memory values |
-| `android.os.SystemProperties` | `get`, `getInt`, `getLong`, and native getter overloads for CPU/GPU/build properties |
+| `android.content.res.Resources` / `android.view.Display` | Patches app-process display metrics, size, and density |
+| `android.os.SystemProperties` | `get`, `getInt`, `getLong`, and native getter overloads for CPU/GPU/build/display/network/telephony properties |
+| `android.net.wifi.WifiInfo` / `WifiManager` / `NetworkInterface` | Patches app-process IP and MAC surfaces |
+| `java.util.TimeZone` / `android.telephony.TelephonyManager` | Patches Korea timezone, country, operator, and carrier names |
 | `android.opengl.GLES10/20/30/31/32.glGetString()` | GPU vendor, renderer, and version strings |
 | `javax.microedition.khronos.opengles.GL10.glGetString()` | GPU vendor, renderer, and version strings |
 
@@ -96,7 +102,8 @@ Native hooks:
 | `__system_property_get` | CPU ABI, CPU ABI lists, hardware, EGL, OpenGL ES, fingerprint |
 | `glGetString` | GPU vendor, renderer, and version strings |
 | `android_getCpuFamily` | ARM64 family value |
-| `android_getCpuCount` | `8` |
+| `android_getCpuCount` | `10` |
+| `vkGetPhysicalDeviceProperties` / `vkGetPhysicalDeviceProperties2` | Vulkan vendor, device id, device type, and device name |
 
 The overlay also refreshes `android.os.Build` values after `500ms`, `1500ms`, and `3000ms`. This keeps the overlay in control when delayed hooks from the main bypass script write Build fields later in app startup.
 
@@ -117,7 +124,9 @@ The overlay also refreshes `android.os.Build` values after `500ms`, `1500ms`, an
 - Native `__system_property_get`
 - `Build.CPU_ABI` and `Build.SUPPORTED_ABIS`
 - `SystemProperties` native getters
-- `arm64-v8a`, `Mali-T880`, and `4294967296`
+- Display, network, telephony/timezone, and Vulkan GPU surfaces
+- `arm64-v8a`, `SM-S921N`, `Xclipse 940`, `10` cores, and `8589934592`
+- No on-screen `AlertDialog`, `Toast`, or `Hooked emulator values` popup
 
 ## Limitations
 

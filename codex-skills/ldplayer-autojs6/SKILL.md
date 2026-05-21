@@ -203,7 +203,7 @@ Verify captured Frida logs with:
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-frida-log.ps1 -LogPath .\downloads\frida\<log>.log
 ```
 
-When the app process should see a coherent SM-N935F-like profile, load the hardware overlay after the main bypass script:
+When the app process should see a coherent SM-S921N-like profile, load the hardware overlay after the main bypass script:
 
 ```powershell
 & "$env:USERPROFILE\AppData\Roaming\Python\Python313\Scripts\frida.exe" -U -f com.nexon.mod `

@@ -95,4 +95,4 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\send-ldplayer-key.ps1 -Key
 - Some graphics surfaces may appear black/blank with Windows `PrintWindow`; use ADB screenshots or foreground capture.
 - Google Play is the default install/update source for Android apps. Pause for user login when required.
 - After an LDPlayer reboot, restart `/data/local/tmp/frida-server` through `su -c` before spawning protected apps with Frida.
-- Use `tools\verify-frida-log.ps1` for Frida log smoke checks, and load `tools\frida-spoof-process-hardware.js` after the main bypass script when the target app process needs the SM-N935F-like hardware profile.
+- Use `tools\verify-frida-log.ps1` for Frida log smoke checks, and load `tools\frida-spoof-process-hardware.js` after the main bypass script when the target app process needs the SM-S921N-like hardware profile.

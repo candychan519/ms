@@ -41,7 +41,7 @@ try {
   @"
 Attach
 BypassNativeNow
-[+] Display spoof enabled: SM-N935F 1440x2560, densityDpi=560
+[+] Display profile spoof enabled: 1080x2340, densityDpi=420
 Unpinning setup completed
   --> Bypassing OkHTTPv3 (`$okhttp): m-api.nexon.com
 TypeError: not a function

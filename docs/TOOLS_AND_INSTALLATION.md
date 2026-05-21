@@ -91,12 +91,14 @@ pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps
 
 ### Frida Hardware Profile Overlay
 
-Use `tools\frida-spoof-process-hardware.js` after the main bypass script when the app process should see a coherent SM-N935F-like hardware profile:
+Use `tools\frida-spoof-process-hardware.js` after the main bypass script when the app process should see a coherent SM-S921N-like hardware profile:
 
 - CPU ABI: `arm64-v8a`
-- CPU cores: `8`
-- GPU: `ARM / Mali-T880 / OpenGL ES 3.2`
-- Memory: `4294967296` bytes total, `2147483648` bytes available
+- CPU cores: `10`
+- GPU: `Samsung / Xclipse 940 / OpenGL ES 3.2`
+- Memory: `8589934592` bytes total, `5368709120` bytes available
+- Display: `1080x2340`, density DPI `420`
+- Locale/carrier: `ko-KR`, `Asia/Seoul`, `KT`
 
 Example launch:
 
