@@ -30,6 +30,33 @@ pwsh -STA -NoProfile -ExecutionPolicy Bypass -File .\tools\start-maple-console.p
 
 The console window title is `메이플 콘솔`. It includes the minimap coordinate watcher, three map profiles, `A 누르기`, `A→왼쪽+F v2`, and periodic `D` controls. For the full operating guide, read `docs/HOW_TO_USE_MAPLE_CONSOLE.md`.
 
+## Frida Bypass Quick Start
+
+Restart Frida server as root after every LDPlayer reboot:
+
+```powershell
+& 'C:\LDPlayer\LDPlayer9\adb.exe' -s 127.0.0.1:5555 shell su -c '/data/local/tmp/frida-server >/dev/null 2>&1 &'
+```
+
+Run the MapleStory Worlds package (`com.nexon.mod`) with the main bypass script and the process hardware overlay:
+
+```powershell
+& "$env:USERPROFILE\AppData\Roaming\Python\Python313\Scripts\frida.exe" -U -f com.nexon.mod `
+  -l .\downloads\frida\fdciabdul-frida-multiple-bypass-ldplayer.js `
+  -l .\tools\frida-spoof-process-hardware.js `
+  -o .\downloads\frida\nexon-hardware-spoof-headless.log
+```
+
+Normal Maple runs should omit `downloads\frida\show-spoof-values.js` so Frida values do not appear on screen. Use that visual helper only for temporary benchmark checks.
+
+Verify the Maple run log:
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\nexon-hardware-spoof-headless.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 8','ActivityManager.MemoryInfo spoof enabled','Mali-T880','Bypassing OkHTTPv3.*m-api.nexon.com') -ForbidPattern @('FATAL EXCEPTION','ANR','Application Not Responding','spoof-values','Frida spoof values') -AllowWarningPattern @('TypeError: not a function') -Json"
+```
+
+For benchmark setup, visible spoof-value checks, and the explanation of app-process-scoped verification, read `docs/HOW_TO_VERIFY_FRIDA_HOOKS.md`.
+
 ## Main Documents
 
 - `WORKFLOW.md`: entrypoint and documentation map
