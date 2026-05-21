@@ -5,6 +5,7 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $scriptPath = Join-Path $repoRoot "tools\frida-spoof-process-hardware.js"
+$mainBypassPath = Join-Path $repoRoot "downloads\frida\fdciabdul-frida-multiple-bypass-ldplayer.js"
 $failures = New-Object System.Collections.Generic.List[string]
 
 function Add-Failure {
@@ -33,6 +34,7 @@ if (Test-Path -LiteralPath $scriptPath -PathType Leaf) {
   Assert-True ($content -match "GLES20" -and $content -match "glGetString") "GLES glGetString should be hooked."
   Assert-True ($content -match "__system_property_get") "Native system properties should be hooked."
   Assert-True ($content -match "SUPPORTED_ABIS" -and $content -match "CPU_ABI") "Build CPU ABI fields should be spoofed."
+  Assert-True ($content.Contains('typeof Build[fieldName] === "undefined"')) "Missing Android Build fields should be skipped without noisy failure logs."
   Assert-True ($content -match "native_get" -and $content -match "native_get_int") "SystemProperties native getters should be spoofed."
   Assert-True ($content -match "ro[.]product[.]cpu[.]abi" -and $content -match "arm64-v8a") "CPU ABI should be spoofed as arm64-v8a."
   Assert-True ($content -match "SM-S921N") "Model should match the attached SM-S921N profile."
@@ -46,6 +48,13 @@ if (Test-Path -LiteralPath $scriptPath -PathType Leaf) {
   Assert-True ($content -match "TimeZone" -and $content -match "Asia/Seoul") "Korean timezone should be spoofed."
   Assert-True ($content -match "vkGetPhysicalDeviceProperties" -and $content -match "vulkanDeviceName") "Vulkan GPU properties should be spoofed."
   Assert-True ($content -notmatch "AlertDialog" -and $content -notmatch "Toast" -and $content -notmatch "Hooked emulator values") "Hardware overlay should not show on-screen Frida messages."
+}
+
+if (Test-Path -LiteralPath $mainBypassPath -PathType Leaf) {
+  $mainContent = Get-Content -LiteralPath $mainBypassPath -Raw
+
+  Assert-True ($mainContent -match "SM-S921N" -and $mainContent -match "1080x2340" -and $mainContent -match "densityDpi=420") "Main bypass display log should match the SM-S921N profile."
+  Assert-True ($mainContent -notmatch "SM-N935F" -and $mainContent -notmatch "1440x2560" -and $mainContent -notmatch "densityDpi=560") "Main bypass should not keep the previous display/build profile."
 }
 
 if ($failures.Count -gt 0) {
