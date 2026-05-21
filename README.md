@@ -2,6 +2,10 @@
 
 This repository stores the local workflow, scripts, tests, and Codex skill source for Android automation work using LDPlayer, AutoJs6, and ADB on Windows.
 
+## Public Repository Notice
+
+This is a public GitHub repository. Keep secrets, account credentials, private device data, screenshots with personal information, APK downloads, and Frida run logs out of Git.
+
 ## Current Baseline
 
 - LDPlayer: `C:\LDPlayer\LDPlayer9`

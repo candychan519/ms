@@ -2,6 +2,20 @@
 
 이 문서는 AutoJs6 사용 방법과 Windows-LDPlayer 공유 방법을 기록합니다.
 
+## Public Repository Boundary
+
+This project is public on GitHub. Commit reusable workflow notes, scripts, tests, and documentation only.
+
+Do not commit:
+
+- secrets, tokens, passwords, or account recovery data
+- personal screenshots, recordings, or LDPlayer captures
+- APK, XAPK, APKS, or other downloaded app packages
+- Frida run logs or files that reveal private runtime/account state
+- local `.env` files, generated reports with private data, or machine-specific credentials
+
+Use the LDPlayer shared folder for moving files into the emulator, but treat that folder as local runtime state rather than source-controlled project content.
+
 ## Shared Folder Mapping
 
 LDPlayer maps the Windows folder to Android storage:
