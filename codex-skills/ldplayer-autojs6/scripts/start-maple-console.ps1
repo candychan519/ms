@@ -164,6 +164,7 @@ $afRepeatActive = $false
 $afRepeatTimer = $null
 $afRepeatDirectionScanCode = $LeftKeyScanCode
 $afRepeatPendingDirectionDoubleTap = $false
+$inputProcess = $null
 
 function New-Label {
   param(
@@ -228,41 +229,88 @@ function Get-InputSleepCommand {
   return ("sleep {0}" -f $seconds.ToString("0.###", [System.Globalization.CultureInfo]::InvariantCulture))
 }
 
+function Start-AdbShellInputProcess {
+  param([string]$CommandText)
+
+  $escapedCommandText = $CommandText.Replace('"', '\"')
+  $argumentText = ('-s "{0}" shell "{1}"' -f $Serial, $escapedCommandText)
+  $process = Start-Process -FilePath $AdbPath -ArgumentList $argumentText -WindowStyle Hidden -PassThru
+  $script:inputProcess = $process
+  return $process
+}
+
+function Stop-ActiveInputProcess {
+  if ($script:inputProcess -and -not $script:inputProcess.HasExited) {
+    try {
+      $script:inputProcess.Kill()
+      $script:inputProcess.WaitForExit(500) | Out-Null
+    } catch {
+    }
+  }
+}
+
 function Invoke-InputEventCommand {
-  param([string[]]$Commands)
+  param(
+    [string[]]$Commands,
+    [switch]$Async,
+    [switch]$Force
+  )
 
   if (-not $Commands -or $Commands.Count -eq 0) {
-    return
+    return $false
   }
 
   $commandText = ($Commands -join "; ")
+  if ($Async) {
+    if (-not $Force -and $script:inputProcess -and -not $script:inputProcess.HasExited) {
+      return $false
+    }
+
+    Start-AdbShellInputProcess -CommandText $commandText | Out-Null
+    return $true
+  }
+
   $output = & $AdbPath -s $Serial shell $commandText 2>&1
   if ($LASTEXITCODE -ne 0) {
     throw "ADB input failed: $($output -join ' ')"
   }
+  return $true
 }
 
 function Send-InputEvent {
   param(
     [int]$ScanCode,
-    [int]$Value
+    [int]$Value,
+    [switch]$Async,
+    [switch]$Force
   )
 
-  Invoke-InputEventCommand -Commands (Get-InputEventCommand -ScanCode $ScanCode -Value $Value)
+  Invoke-InputEventCommand -Commands (Get-InputEventCommand -ScanCode $ScanCode -Value $Value) -Async:$Async -Force:$Force | Out-Null
 }
 
 function Send-AKeyDown {
-  Send-InputEvent -ScanCode $AKeyScanCode -Value 1
+  Send-InputEvent -ScanCode $AKeyScanCode -Value 1 -Async -Force
   $script:aHoldIsDown = $true
 }
 
 function Send-AKeyUp {
-  Send-InputEvent -ScanCode $AKeyScanCode -Value 0
+  Send-InputEvent -ScanCode $AKeyScanCode -Value 0 -Async -Force
   $script:aHoldIsDown = $false
 }
 
+function Release-RepeatKeys {
+  Stop-ActiveInputProcess
+  Invoke-InputEventCommand -Async -Force -Commands @(
+    (Get-InputEventCommand -ScanCode $AKeyScanCode -Value 0)
+    (Get-InputEventCommand -ScanCode $DKeyScanCode -Value 0)
+    (Get-InputEventCommand -ScanCode $FKeyScanCode -Value 0)
+    (Get-InputEventCommand -ScanCode $LeftKeyScanCode -Value 0)
+    (Get-InputEventCommand -ScanCode $RightKeyScanCode -Value 0)
+  ) | Out-Null
+}
+
 function Send-DKeyTapThenAKeyDown {
-  Invoke-InputEventCommand -Commands @(
+  Invoke-InputEventCommand -Async -Commands @(
     (Get-InputEventCommand -ScanCode $DKeyScanCode -Value 1)
     (Get-InputSleepCommand -HoldMs $AFRepeatKeyHoldMs)
     (Get-InputEventCommand -ScanCode $DKeyScanCode -Value 0)
@@ -273,7 +321,7 @@ function Send-DKeyTapThenAKeyDown {
 }
 
 function Send-DKeyTapDuringARepeat {
-  Invoke-InputEventCommand -Commands @(
+  Invoke-InputEventCommand -Async -Commands @(
     (Get-InputEventCommand -ScanCode $AKeyScanCode -Value 0)
     (Get-InputSleepCommand -HoldMs $AFRepeatBetweenKeyMs)
     (Get-InputEventCommand -ScanCode $DKeyScanCode -Value 1)
@@ -333,7 +381,7 @@ function Stop-AHold {
   }
   if ($script:aHoldIsDown) {
     try {
-      Send-AKeyUp
+      Release-RepeatKeys
     } catch {
     }
   }
@@ -435,6 +483,7 @@ function Stop-AFRepeat {
   if ($script:afRepeatTimer) {
     $script:afRepeatTimer.Stop()
   }
+  Release-RepeatKeys
   $script:afRepeatActive = $false
   $script:afRepeatPendingDirectionDoubleTap = $false
 }
@@ -457,7 +506,7 @@ function Send-AFKeyTapCycle {
     $script:afRepeatPendingDirectionDoubleTap = $false
   }
 
-  Invoke-InputEventCommand -Commands @(
+  Invoke-InputEventCommand -Async -Commands @(
     (Get-InputEventCommand -ScanCode $AKeyScanCode -Value 1)
     (Get-InputSleepCommand -HoldMs $AFRepeatKeyHoldMs)
     (Get-InputEventCommand -ScanCode $AKeyScanCode -Value 0)
