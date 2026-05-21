@@ -22,6 +22,11 @@ All notable changes to this project will be documented in this file.
 - Simplify the LDPlayer AutoJs6 workflow docs and reusable skill guidance.
 - Cover minimap detection, Maple console controls, skill packaging, Frida verification, and layout sizing with focused PowerShell tests.
 
+### For contributors
+
+- Document that this repository is public and keep credentials, APKs, screenshots, Frida logs, and private runtime artifacts out of Git.
+- Add `CONTRIBUTING.md` with the public repository boundary, focused verification workflow, Maple console preservation checklist, and Frida target-process verification rules.
+
 ### Fixed
 
 - Validate ADB serial values before live minimap capture commands run.
