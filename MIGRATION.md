@@ -4,7 +4,7 @@ Use this guide to restore this LDPlayer + AutoJs6 automation workspace on anothe
 
 ## What Is In Git
 
-The private GitHub repository contains:
+The public GitHub repository contains:
 
 - Project documentation and workflow notes
 - PowerShell tools under `tools/`
@@ -19,6 +19,7 @@ The repository intentionally excludes:
 - APK/XAPK/APKS files
 - screenshots and image captures
 - `.env`, token, and key files
+- Frida run logs and private runtime artifacts
 - editor and OS noise
 
 ## Baseline To Recreate
