@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Document benchmark APKs, Frida hook verification, hardware overlay usage, and root Frida server restart after LDPlayer reboot.
 - Generate dedicated Frida verification tutorial, how-to, reference, and explanation docs.
 - Add a task-oriented Maple console how-to for opening the console, choosing map profiles, using repeat controls, and verifying layout.
+- Align the Frida hardware overlay to the attached `SM-S921N` profile, including Exynos 2400, Xclipse 940, 10 CPU cores, 8 GiB memory, 1080x2340 display metrics, KT/KR locale and telephony, Wi-Fi/IP/MAC, and Vulkan GPU surfaces.
 - Simplify the LDPlayer AutoJs6 workflow docs and reusable skill guidance.
 - Cover minimap detection, Maple console controls, skill packaging, Frida verification, and layout sizing with focused PowerShell tests.
 

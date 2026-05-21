@@ -101,16 +101,18 @@ Use the HTTP Toolkit Demo when you want a quick visible check of the spoofed val
 
 The visual helper is only for temporary inspection. It can show values such as:
 
-- `SM-N935F`
+- `SM-S921N`
 - `arm64-v8a`
-- `8` CPU cores
-- `Mali-T880`
-- `4294967296` total memory
+- `10` CPU cores
+- `Xclipse 940`
+- `8589934592` total memory
+- `1080x2340`, density DPI `420`
+- `KT`, `ko-KR`, `Asia/Seoul`
 
 Verify the same values in the log:
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\httptoolkit-hardware-spoof.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 8','ActivityManager.MemoryInfo spoof enabled','Mali-T880') -ForbidPattern @('FATAL EXCEPTION','Application Not Responding','ANR') -Json"
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\httptoolkit-hardware-spoof.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 10','ActivityManager.MemoryInfo spoof enabled','Xclipse 940') -ForbidPattern @('FATAL EXCEPTION','Application Not Responding','ANR') -Json"
 ```
 
 ## Run `com.nexon.mod` Headless
@@ -127,7 +129,7 @@ For a normal target-app run, omit `downloads\frida\show-spoof-values.js` so no F
 Verify the headless target log:
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\nexon-hardware-spoof-headless.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 8','ActivityManager.MemoryInfo spoof enabled','Mali-T880','Bypassing OkHTTPv3.*m-api.nexon.com') -ForbidPattern @('FATAL EXCEPTION','ANR','Application Not Responding','spoof-values','Frida spoof values') -AllowWarningPattern @('TypeError: not a function') -Json"
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& '.\tools\verify-frida-log.ps1' -LogPath '.\downloads\frida\nexon-hardware-spoof-headless.log' -RequirePattern @('Process hardware profile spoof enabled','Runtime.availableProcessors spoof enabled: 10','ActivityManager.MemoryInfo spoof enabled','Xclipse 940','Bypassing OkHTTPv3.*m-api.nexon.com') -ForbidPattern @('FATAL EXCEPTION','ANR','Application Not Responding','spoof-values','Frida spoof values','Hooked emulator values') -AllowWarningPattern @('TypeError: not a function') -Json"
 ```
 
 Expected result:
@@ -143,7 +145,7 @@ If Frida reports `need Gadget to attach on jailed Android`, restart Frida server
 
 If values appear on screen during a normal app run, remove `downloads\frida\show-spoof-values.js` from the Frida command.
 
-If ADB reports values that do not match `SM-N935F`, check from inside the app process instead. The overlay is app-process-scoped and does not change host-level LDPlayer identity.
+If ADB reports values that do not match `SM-S921N`, check from inside the app process instead. The overlay is app-process-scoped and does not change host-level LDPlayer identity.
 
 If `verify-frida-log.ps1` fails a required pattern, inspect the log path first. A missing pattern usually means the hook did not load, the app did not exercise that API, or the command wrote to a different log file.
 
