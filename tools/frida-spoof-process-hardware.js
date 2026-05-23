@@ -160,6 +160,7 @@
     var Build = Java.use("android.os.Build");
     Object.keys(PROFILE.build).forEach(function (fieldName) {
       try {
+        if (typeof Build[fieldName] === "undefined") return;
         Build[fieldName].value = PROFILE.build[fieldName];
       } catch (err) {
         console.log("[-] Build." + fieldName + " spoof failed: " + err);

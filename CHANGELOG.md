@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.0.3] - 2026-05-21
+
+### Fixed
+
+- Keep Frida hardware spoof logs clean when Android lacks newer `Build.SOC_*` fields, while preserving the `SM-S921N` profile through app-process system properties.
+- Keep Maple console repeat-stop buttons responsive by sending ADB input from background processes and force-releasing repeat keys on stop.
+- Add a local QA report for the `com.nexon.mod` Frida smoke run that verifies the `SM-S921N` profile, headless execution, and absence of old-profile or popup markers.
+
 ## [0.1.0.2] - 2026-05-21
 
 ### Added
