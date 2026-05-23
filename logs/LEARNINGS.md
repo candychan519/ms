@@ -488,3 +488,17 @@ Expanded the text-bearing controls enough to prevent clipping, then compacted th
 
 Next action:
 For Windows Forms UI QA, always capture and inspect a real screenshot in addition to UI Automation name/bounds checks; name presence does not prove text is visually unclipped.
+
+## 2026-05-23 - LDPlayer hosts Override Via Bind Mount
+
+Context:
+The user asked to add Nexon-related blocking entries to LDPlayer's `/system/etc/hosts`.
+
+Finding:
+LDPlayer index `0` was initially stopped, so ADB on `127.0.0.1:5555` refused the connection until the instance was launched. After `adb root`, direct writes to `/system/etc/hosts` still failed because `/dev/root` stayed read-only and `adb remount` reported `Permission denied`. A root bind mount from `/data/local/tmp/hosts.codex` to `/system/etc/hosts` succeeded and immediately changed what apps see at that path.
+
+Verification:
+`cat /system/etc/hosts` showed the requested IPv4 and IPv6 entries after the bind mount. `ping -c 1 -W 1 x-phaethon.ngs.nexon.com` and `ping -c 1 -W 1 mod-file.dn.nexoncdn.co.kr` both resolved to `127.0.0.1` and replied from localhost.
+
+Next action:
+Treat this as a runtime override unless a persistent boot-time remount/bind mechanism is added. After an LDPlayer reboot, reapply the bind mount or create an explicit helper for it.
